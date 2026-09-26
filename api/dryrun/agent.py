@@ -91,7 +91,8 @@ def status() -> dict[str, Any]:
 def agent_spec() -> dict[str, Any]:
     s = settings()
     spec: dict[str, Any] = {
-        "model": {"name": s.dryrun_agent_model, "params": {"temperature": 0.1, "max_tokens": 4096}},
+        # No temperature: OpenAI reasoning models (gpt-5.x) reject it.
+        "model": {"name": s.dryrun_agent_model, "params": {"max_tokens": 8192}},
         "instructions": INSTRUCTIONS,
         "mcp_servers": [{"name": "dryrun", "enable_tools": ["@all"], "require_approval_for_tools": APPROVAL_GATED, "preload": True}],
         "config": {"iteration_limit": 60, "sandbox": {"enabled": bool(s.dryrun_agent_sandbox)}},
