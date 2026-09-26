@@ -19,7 +19,7 @@ import {
   useCountUp,
   verdictOf,
 } from "@/components/rehearsal/util";
-import { api, ApiError, useApi } from "@/lib/api";
+import { api, API_URL, ApiError, useApi } from "@/lib/api";
 import { fmtDuration, fmtInt, fmtTime, pad2 } from "@/lib/format";
 import type { AiFixState, Approval, Check, Rehearsal, RiskPart } from "@/lib/types";
 
@@ -217,8 +217,11 @@ function Report({ r, id, dark, crumbs }: { r: Rehearsal; id: string; dark: boole
               </a>
             )}
             <span className="st st-safe">✓ production unchanged</span>
+            <a className="btn btn-sm" href={`${API_URL}/api/rehearsals/${r.id}/report.md`} download>
+              Download report
+            </a>
             <button type="button" className="btn btn-sm" onClick={exportJson}>
-              Export
+              JSON
             </button>
           </>
         }

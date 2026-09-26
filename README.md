@@ -8,6 +8,8 @@ Demo target: a real **hostel management system** (students, rooms, allocations, 
 
 ---
 
+> 📄 Two-page write-up: [SOLUTION.md](SOLUTION.md)
+
 ## The problem
 
 Schema migrations are the scariest deploys a team ships. A single `ALTER TABLE` can fail halfway, silently cut or
@@ -36,7 +38,9 @@ Most teams find out in production.
    DryRun answers TrueForge's paused call with `user.tool_approval: allow`. DryRun re-checks the approval
    server-side, takes a `pg_dump` backup, applies with `lock_timeout` + advisory lock, re-runs the checks on
    production, and keeps a restore button for 24 h.
-5. Every action lands in a **hash-chained audit log** (`sha256(prev_hash + event)`); `/api/audit/verify` detects tampering.
+5. The report is delivered where the team works: in-app, **Download report** (Markdown), a **GitHub PR comment**
+   (`github_pr` on the rehearsal) and **Slack** — each optional via env vars.
+6. Every action lands in a **hash-chained audit log** (`sha256(prev_hash + event)`); `/api/audit/verify` detects tampering.
 
 ### Where it stops (human in the loop)
 
@@ -119,7 +123,7 @@ and tool-approval pause/resume; AI-written checks and fixes; production backup/a
 
 **Simplified / mocked:** sign-in is a demo role switcher (header `X-DryRun-User`), not real auth; the sandbox is a
 separate database on the same Postgres server rather than a separate VM; the sandbox CPU sparkline is decorative;
-GitHub PR checks and Slack notifications are status cards only (not implemented yet).
+GitHub PR comments and Slack messages are implemented but only fire when `GITHUB_TOKEN`/`GITHUB_REPO` or `SLACK_WEBHOOK_URL` are set.
 
 ## Known limits
 

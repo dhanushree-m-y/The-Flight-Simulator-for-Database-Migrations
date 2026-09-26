@@ -13,10 +13,11 @@ from typing import Any, AsyncIterator
 
 from fastapi import Depends, FastAPI, Header, HTTPException, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import PlainTextResponse
 from pydantic import BaseModel, Field
 from sse_starlette.sse import EventSourceResponse
 
-from . import agent, analyzer, audit, engine, events, policies, production, profiler, sandbox, store
+from . import agent, analyzer, audit, engine, events, policies, production, profiler, report, sandbox, store
 from .config import settings
 from .db import connect, database_of, masked_host
 from .mcp_tools import mcp
@@ -295,7 +296,8 @@ class NewRehearsal(BaseModel):
     up_sql: str = Field(min_length=3)
     down_sql: str | None = None
     parent_id: str | None = None
-    options: dict[str, bool] = Field(default_factory=lambda: {"ai_checks": True, "rollback": True})
+    options: dict[str, Any] = Field(default_factory=lambda: {"ai_checks": True, "rollback": True})
+    github_pr: int | None = None
 
 
 def _create(body: NewRehearsal, u: dict[str, Any]) -> dict[str, Any]:
@@ -311,7 +313,8 @@ def _create(body: NewRehearsal, u: dict[str, Any]) -> dict[str, Any]:
         version = max(r["version"] for r in store.list_rehearsals(limit=100, lineage_id=lineage_id)) + 1
     rid = store.new_id("reh")
     doc = engine.new_rehearsal_doc(rid=rid, name=body.name.strip(), version=version, lineage_id=lineage_id, parent_id=body.parent_id,
-                                   connection=conn, up_sql=body.up_sql.strip(), down_sql=(body.down_sql or "").strip() or None, user=u, options=body.options)
+                                   connection=conn, up_sql=body.up_sql.strip(), down_sql=(body.down_sql or "").strip() or None, user=u,
+                                   options={**body.options, **({"github_pr": body.github_pr} if body.github_pr else {})})
     store.save_rehearsal(doc)
     store.save_state(rid, {})
     audit.record("rehearsal.started", actor=u["id"], target=rid, name=doc["name"], version=version, connection=conn["name"])
@@ -361,6 +364,14 @@ def cancel(rid: str, u: dict = Depends(require("engineer", "approver"))) -> dict
     engine.cancel(rid)
     audit.record("rehearsal.cancelled", actor=u["id"], target=rid)
     return engine.public(_rehearsal(rid))
+
+
+@app.get("/api/rehearsals/{rid}/report.md", response_class=PlainTextResponse)
+def report_markdown(rid: str) -> PlainTextResponse:
+    doc = _rehearsal(rid)
+    return PlainTextResponse(report.markdown(doc, f"{settings().web_origin.rstrip('/')}/rehearsals/{rid}/report"),
+                             media_type="text/markdown; charset=utf-8",
+                             headers={"Content-Disposition": f'attachment; filename="dryrun-{doc["name"]}-v{doc["version"]}.md"'})
 
 
 @app.get("/api/rehearsals/{rid}/checks/{check_id}/rows")
@@ -465,6 +476,7 @@ def request_approval(rid: str, body: ApprovalRequest, u: dict = Depends(require(
     store.save_rehearsal(reh)
     audit.record("approval.requested", actor=u["id"], target=aid, rehearsal=rid)
     _thread(agent.request_apply, aid)
+    _thread(report.notify_approval, doc)
     return _approval_out(doc)
 
 

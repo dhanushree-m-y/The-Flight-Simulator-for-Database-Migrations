@@ -97,8 +97,10 @@ def apply(approval_id: str) -> dict[str, Any]:
     _step(approval, "backup", "running", f"pg_dump {', '.join(tables) or 'full database'}")
     Path(s.backups_dir).mkdir(parents=True, exist_ok=True)
     backup = str(Path(s.backups_dir) / f"{approval_id}.dump")
+    with connect(prod_dsn, app="dryrun-backup-scope") as c:
+        existing = [t for t in tables if c.execute("SELECT to_regclass(%s) IS NOT NULL AS ok", (t,)).fetchone()["ok"]]
     cmd = [s.pg_tool("pg_dump"), "--format=custom", "--file", backup]
-    for t in tables:
+    for t in existing:
         cmd += ["--table", t]
     proc = subprocess.run(cmd, capture_output=True, env=libpq_env(prod_dsn))
     if proc.returncode != 0:
@@ -149,7 +151,28 @@ def apply(approval_id: str) -> dict[str, Any]:
             ok = n == 0 if chk.get("before") == "expect no rows" else n > 0
             problems += 0 if ok else 1
             _log(approval, "info" if ok else "error", "verify", f"{'✓' if ok else '✕'} {chk['title']}")
-    _step(approval, "verify", "passed" if problems == 0 else "failed", f"{len(checks)} checks re-run on production", t0)
+    # Production must now look exactly like the sandbox did after the rehearsal.
+    expected = (store.state(reh["id"]).get("table_rows_after") or {})
+    matched = 0
+    with connect(prod_dsn, app="dryrun-verify-counts") as c:
+        c.execute("SET TRANSACTION READ ONLY")
+        from . import profiler
+
+        live = {t["display"]: t for t in profiler.list_tables(c)}
+        for table, want in expected.items():
+            if table not in live:
+                problems += 1
+                _log(approval, "error", "verify", f"✕ {table} missing on production")
+                continue
+            got = profiler.count_rows(c, live[table]["schema"], live[table]["name"])
+            if got == want:
+                matched += 1
+            else:
+                # Production may have received writes since the rehearsal snapshot — report, don't fail silently.
+                _log(approval, "warn", "verify", f"△ {table}: {got:,} rows on production vs {want:,} in rehearsal (live writes since snapshot?)")
+        _log(approval, "info", "verify", f"✓ {matched}/{len(expected)} tables match the rehearsed row counts")
+    _step(approval, "verify", "passed" if problems == 0 else "failed",
+          f"{matched}/{len(expected)} tables match rehearsal · {len(checks)} AI checks re-run", t0)
     approval["apply"]["restore_until"] = (datetime.now(timezone.utc) + timedelta(hours=24)).isoformat()
     return _finish(approval, "succeeded" if problems == 0 else "failed", "applied and verified" if problems == 0 else f"{problems} verification check(s) failed — consider restoring")
 

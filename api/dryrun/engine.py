@@ -1013,6 +1013,9 @@ def finalize(rid: str, *, headline: str | None = None, summary: str | None = Non
     rec.log("info", "report", f"verdict {status.upper()} · risk {risk}")
     audit.record("rehearsal.finished", actor=rec.doc["created_by"]["id"], target=rid, name=rec.doc["name"], version=rec.doc["version"], risk=risk, status=status)
     rec.emit({"type": "done", "rehearsal": public(rec.doc)})
+    from . import report
+
+    threading.Thread(target=report.deliver, args=(rid,), daemon=True).start()
     return {"status": status, "risk": risk, "risk_parts": parts, "policy_violations": violations}
 
 
