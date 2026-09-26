@@ -98,7 +98,8 @@ def evaluate(doc: dict[str, Any], *, statements: list[str] | None = None, table_
                     out.append(_v(p, f"{lk['table']} held ACCESS EXCLUSIVE for {lk['duration_ms']:.0f} ms (limit {prm['max_lock_ms']} ms)"))
         elif k == "require_rollback":
             rb = doc.get("rollback") or {}
-            if doc.get("status") != "blocked" and rb.get("status") != "passed":
+            rejected = any(c["key"] == "migration_applied" and c["status"] == "fail" for c in doc.get("checks", []))
+            if not rejected and rb.get("status") != "passed":
                 out.append(_v(p, "No rollback has been proven identical yet"))
         elif k == "destructive_ddl":
             import re

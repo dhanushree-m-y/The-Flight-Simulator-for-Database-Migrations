@@ -406,6 +406,35 @@ def _run_statements(dsn: str, stmts: list[str], *, tag: str) -> dict[str, Any]:
     return result
 
 
+def _merge_lock_timings(res: dict[str, Any], stmts: list[str]) -> list[dict[str, Any]]:
+    """Postgres holds table locks from the statement that takes them until COMMIT. The monitor samples
+    pg_locks every ~15ms and can miss fast statements, so we also derive hold time from the measured
+    statement timings: a lock taken by statement i is held for the time of statements i..n."""
+    locks = {lk["table"]: dict(lk) for lk in res["locks"]}
+    timings = [t["ms"] for t in res["timings"]]
+    for i, stmt in enumerate(stmts):
+        executed = i < len(timings)
+        held = sum(timings[i:]) if executed else 0.0
+        for lk in analyzer.lock_for(stmt):
+            if lk.table == "?":
+                continue
+            cur = locks.get(lk.table)
+            rank = MODE_RANK.index(lk.mode) if lk.mode in MODE_RANK else 0
+            entry = {"table": lk.table, "mode": lk.mode, "duration_ms": round(held, 1), "blocks_reads": lk.mode == "ACCESS EXCLUSIVE",
+                     "blocks_writes": lk.mode in MODE_RANK[4:], "source": "measured" if executed else "static"}
+            if cur is None:
+                locks[lk.table] = entry
+            elif rank > (MODE_RANK.index(cur["mode"]) if cur["mode"] in MODE_RANK else 0):
+                entry["duration_ms"] = max(entry["duration_ms"], cur["duration_ms"])
+                locks[lk.table] = entry
+            else:
+                cur["duration_ms"] = max(cur["duration_ms"], round(held, 1))
+    for lk in locks.values():
+        lk["blocks_reads"] = lk["mode"] == "ACCESS EXCLUSIVE"
+        lk["blocks_writes"] = lk["mode"] in MODE_RANK[4:]
+    return list(locks.values())
+
+
 def apply_migration(rid: str) -> dict[str, Any]:
     rec = Recorder.of(rid)
     st, dsn = _sb(rid)
@@ -417,13 +446,7 @@ def apply_migration(rid: str) -> dict[str, Any]:
     rec.stage("migrate", "running", f"{len(stmts)} statement(s)")
     rec.log("info", "migration.apply", rec.doc["name"])
     res = _run_statements(dsn, stmts, tag="migrate")
-    # Merge static lock knowledge for statements the monitor could not observe (too fast / failed early).
-    measured = {lk["table"] for lk in res["locks"]}
-    for s in stmts:
-        for lk in analyzer.lock_for(s):
-            if lk.table not in measured and lk.table != "?":
-                res["locks"].append({"table": lk.table, "mode": lk.mode, "duration_ms": 0.0, "blocks_reads": lk.mode == "ACCESS EXCLUSIVE",
-                                     "blocks_writes": lk.mode in MODE_RANK[4:], "source": "static"})
+    res["locks"] = _merge_lock_timings(res, stmts)
     rec.set(locks=res["locks"])
     for lk in res["locks"]:
         rec.log("info" if lk["mode"] != "ACCESS EXCLUSIVE" else "warn", "lock.observe", f"{lk['table']} · {lk['mode']} · {lk['duration_ms']:.0f}ms ({lk['source']})")
@@ -611,6 +634,10 @@ def compare(rid: str) -> dict[str, Any]:
 
         if not applied_ok:
             rec.log("info", "compare", "migration was rejected — sandbox unchanged, comparing to confirm")
+            for stmt_ in analyzer.split_statements(rec.doc["up_sql"]):
+                for t_ in analyzer.tables_in(stmt_):
+                    if t_ in before["tables"]:
+                        changed_tables.add(t_)
         # Dropped / added tables
         for t, b in before["tables"].items():
             if t not in after["tables"]:
@@ -742,9 +769,10 @@ def compare(rid: str) -> dict[str, Any]:
     impact = []
     for t in sorted(set(before["tables"]) | set(after["tables"])):
         status = "changed" if t in changed_tables else "affected" if t in related else "unchanged"
+        target_note = "targeted by the rejected migration" if not applied_ok else "modified by the migration"
         rows_n = (after["tables"].get(t) or before["tables"].get(t))["rows"]
         impact.append({"name": t, "rows": rows_n, "status": status, "references": refs.get(t, []),
-                       "note": None if status == "unchanged" else ("modified by the migration" if status == "changed" else "linked to a changed table")})
+                       "note": None if status == "unchanged" else (target_note if status == "changed" else "linked to a changed table")})
     diffs = [{"table": t, "before": st["ddl_before"].get(t, "-- (did not exist)"), "after": ddl_after.get(t, "-- (dropped)")}
              for t in sorted(changed_tables) if st["ddl_before"].get(t) != ddl_after.get(t)]
     rec.set(impact=impact, schema_diff=diffs)
@@ -890,7 +918,7 @@ def score(doc: dict[str, Any], table_rows: dict[str, int], max_lock_ms: float = 
     checks = doc["checks"]
     migration_failed = any(c["key"] == "migration_applied" and c["status"] == "fail" for c in checks)
     if migration_failed:
-        add("constraint", "Migration rejected", 40, 60)
+        add("constraint", "Rejected by PostgreSQL", 40, 60)
     for c in checks:
         if c["key"] in ("migration_applied", "row_counts", "fk_integrity", "rollback"):
             if c["key"] == "fk_integrity" and c["status"] == "fail":

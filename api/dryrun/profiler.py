@@ -100,7 +100,9 @@ def profile_table(c: psycopg.Connection, t: dict[str, Any], exact_distinct_limit
         )
     cols: dict[str, Any] = {}
     if parts:
-        q = sql.SQL("SELECT {} FROM {}").format(sql.SQL(", ").join(parts), ident(t["schema"], t["name"]))
+        # Alias every aggregate: dict rows would otherwise collapse same-named columns (count, max, md5).
+        aliased = [sql.SQL("{} AS {}").format(p, sql.Identifier(f"c{i}")) for i, p in enumerate(parts)]
+        q = sql.SQL("SELECT {} FROM {}").format(sql.SQL(", ").join(aliased), ident(t["schema"], t["name"]))
         vals = list(c.execute(q, prepare=False).fetchone().values())
         for i, col in enumerate(t["columns"]):
             nulls, distinct, maxlen, checksum = vals[i * 4 : i * 4 + 4]
