@@ -1,0 +1,5 @@
+
+body{margin:0;background:#FFF8FB}
+.code .src,.code .ln{font-size:12px;line-height:1.85}
+.ps{display:grid;grid-template-columns:30px minmax(0,1fr);gap:12px;padding:10px 0;border-bottom:1px solid var(--line);font:500 13.5px/1.45 'Manrope',sans-serif}
+.ps b{font:400 22px/1 'Instrument Serif',serif;color:#6A4FB8}

@@ -1,0 +1,85 @@
+
+<div class="pm calm app" style="width:1440px;height:1000px;background:#FAF7F9">
+  <aside class="side" aria-label="Primary" style="background:#FFFFFF">
+    <div class="brand"><svg width="26" height="26" sc-camel-view-box="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="11" fill="none" stroke="#D94F87" stroke-width="1.4"></circle><circle cx="13" cy="13" r="6" fill="none" stroke="#7758C8" stroke-width="1.4" stroke-dasharray="2 2.5"></circle><circle cx="13" cy="13" r="2" fill="#261F29"></circle></svg>DryRun</div>
+    <a href="#"><svg width="17" height="17" sc-camel-view-box="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><rect x="2" y="2" width="5" height="5" rx="1.2"></rect><rect x="9" y="2" width="5" height="5" rx="1.2"></rect><rect x="2" y="9" width="5" height="5" rx="1.2"></rect><rect x="9" y="9" width="5" height="5" rx="1.2"></rect></svg>Overview</a>
+    <a href="#"><svg width="17" height="17" sc-camel-view-box="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M1 8h3l2-5 3 10 2-5h4"></path></svg>Rehearsals</a>
+    <a href="#" class="on"><svg width="17" height="17" sc-camel-view-box="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M3 8.5l3 3 7-7"></path></svg>Approvals<span class="badge">1</span></a>
+    <a href="#"><svg width="17" height="17" sc-camel-view-box="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><ellipse cx="8" cy="4" rx="5" ry="2"></ellipse><path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"></path></svg>Databases</a>
+    <a href="#"><svg width="17" height="17" sc-camel-view-box="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M8 1.5l5 2.5v4c0 3.2-2.4 5.3-5 6.5-2.6-1.2-5-3.3-5-6.5V4z"></path></svg>Policies</a>
+    <a href="#"><svg width="17" height="17" sc-camel-view-box="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M4 1.5h8v13H4zM6.5 5h3M6.5 8h3M6.5 11h2"></path></svg>Audit Log</a>
+    <a href="#"><svg width="17" height="17" sc-camel-view-box="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M6 1.5v4M10 1.5v4M4 5.5h8v3a4 4 0 01-8 0zM8 12.5v2"></path></svg>Integrations</a>
+    <a href="#"><svg width="17" height="17" sc-camel-view-box="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><circle cx="8" cy="8" r="2.2"></circle><path d="M8 1.5v2M8 12.5v2M1.5 8h2M12.5 8h2M3.4 3.4l1.4 1.4M11.2 11.2l1.4 1.4M3.4 12.6l1.4-1.4M11.2 4.8l1.4-1.4"></path></svg>Settings</a>
+    <div class="col" style="margin-top:auto;gap:4px;padding:12px 10px;border-top:1px solid rgba(76,54,78,.12)"><span style="font:600 13px/1.2 'Manrope',sans-serif">Alex Rivera</span><span class="eyebrow">approver</span></div>
+  </aside>
+
+  <div class="col above" style="min-width:0">
+    <div class="row" style="height:64px;background:#2A1620;color:#FFE9F1">
+      <span style="width:14px;align-self:stretch;background:repeating-linear-gradient(135deg,#D94F87 0 6px,#2A1620 6px 11px)"></span>
+      <div class="row" style="gap:14px;padding:0 24px"><span style="font:500 13px/1 'DM Mono',monospace;letter-spacing:.2em">PRODUCTION</span><span style="font:500 18px/1 'DM Mono',monospace">shop-prod</span></div>
+      <span class="st" style="margin-left:auto;margin-right:24px;background:#23302A;color:#9CC99A;border-radius:13px">✓ history verified</span>
+    </div>
+
+    <div style="display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:36px;padding:36px 40px 30px;flex-grow:1;min-height:0">
+      <div class="col" style="gap:18px">
+        <span class="eyebrow" style="color:#261F29">Execution · 003_add_unique_email · V3 · by DryRun Production Agent</span>
+        <span class="serif" style="font-size:60px;line-height:1">{{headline}}</span>
+        <ol style="list-style:none;margin:0;padding:0" aria-label="Execution stages" aria-live="polite">
+          <li class="sg"><i style="{{s1}}">{{g1}}</i><div class="col" style="gap:4px"><b>Create backup</b><span class="mono muted" style="font-size:11.5px">bk_0925_1602 · 10.8 GB · encrypted</span></div><code>3m 02s</code></li>
+          <li class="sg"><i style="{{s2}}">{{g2}}</i><div class="col" style="gap:4px"><b>Verify backup</b><span class="mono muted" style="font-size:11.5px">test restore of checksum sample</span></div><code>31.4s</code></li>
+          <li class="sg"><i style="{{s3}}">{{g3}}</i><div class="col" style="gap:4px"><b>Apply migration</b><span class="mono muted" style="font-size:11.5px">write lock 0.04s · estimate 0.04s</span></div><code>2.9s</code></li>
+          <li class="sg"><i style="{{s4}}">{{g4}}</i><div class="col" style="gap:4px"><b>Verify schema</b><span class="mono muted" style="font-size:11.5px">unique_email present · matches rehearsal</span></div><code>0.2s</code></li>
+          <li class="sg"><i style="{{s5}}">{{g5}}</i><div class="col" style="gap:4px"><b>Post-migration checks</b><span class="mono muted" style="font-size:11.5px">0 duplicates · 0 orphaned orders · login ok</span></div><code>1.4s</code></li>
+          <li class="sg" style="border:0"><i style="{{s6}}">{{g6}}</i><div class="col" style="gap:4px"><b>Complete</b><span class="mono muted" style="font-size:11.5px">audit event #4822 sealed</span></div><code>16:06:40</code></li>
+        </ol>
+      </div>
+
+      <div class="col" style="gap:18px">
+        <div class="panel" style="padding:20px 24px">
+          <span class="eyebrow">Post-migration verification</span>
+          <div class="vk" style="margin-top:8px"><span>Duplicate emails</span><span>38 → 0</span></div>
+          <div class="vk"><span>users rows</span><span>10,000 → 9,959 (+41 archived)</span></div>
+          <div class="vk"><span>Orphaned orders</span><span>0</span></div>
+          <div class="vk" style="border:0"><span>Login by email · p95</span><span>14ms → 9ms</span></div>
+        </div>
+        <div class="panel" style="padding:20px 24px">
+          <span class="eyebrow">Accountability</span>
+          <div class="vk" style="margin-top:8px"><span>Requested by</span><span>Maya Chen · 15:31</span></div>
+          <div class="vk"><span>Approved by</span><span>Alex Rivera · 16:02</span></div>
+          <div class="vk" style="border:0"><span>Executed by</span><span>DryRun Production Agent</span></div>
+        </div>
+        <div class="col" style="gap:12px;padding:20px 24px;border-radius:14px;border:1px solid rgba(168,35,79,.35);background:#FFFFFF">
+          <div class="row" style="justify-content:space-between"><span class="eyebrow" style="color:#A8234F">Recovery</span><span class="mono muted" style="font-size:11.5px">bk_0925_1602 · kept 14 days</span></div>
+          <span style="font:400 13.5px/1.5 'Manrope',sans-serif">Restore returns all of shop-prod to 16:02. Writes pause for 6–8 minutes and data written after the backup is lost.</span>
+          <button type="button" class="btn" style="align-self:flex-start;color:#A8234F;border-color:#A8234F">⛨ Restore from backup…</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script="" data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:1000}}">
+class Component extends DCLogic {
+  componentDidMount() {
+    this.t0 = performance.now(); this.setState({ t: 0 });
+    const tick = () => { const t = (performance.now() - this.t0) / 1000; this.setState({ t }); if (t < 5) this.raf = requestAnimationFrame(tick); };
+    this.raf = requestAnimationFrame(tick);
+  }
+  componentWillUnmount() { cancelAnimationFrame(this.raf); }
+  renderVals() {
+    const s = this.state || {};
+    const t = s.t === undefined ? 9 : s.t;
+    const at = [0.5, 1.2, 1.9, 2.5, 3.1, 3.7];
+    const out = { headline: t >= 3.7 ? 'Applied. Verified. Recorded.' : 'Changing production, carefully.' };
+    at.forEach((a, i) => {
+      const done = t >= a, run = !done && (i === 0 || t >= at[i - 1]);
+      out['g' + (i + 1)] = done ? '✓' : (run ? '●' : String(i + 1));
+      out['s' + (i + 1)] = done ? 'background:#47705A;color:#FFFFFF' : (run ? 'background:#FFFFFF;color:#2A1620;border:2px solid #2A1620' : 'background:#FFFFFF;color:#756A78;border:1px solid rgba(38,31,41,.2)');
+    });
+    return out;
+  }
+}
+</script>
+
+
+</body></html>

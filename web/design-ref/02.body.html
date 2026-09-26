@@ -1,0 +1,100 @@
+
+<div class="pm bloom" style="width:1440px;height:900px" sc-camel-on-mouse-move="{{trailMove}}" sc-camel-on-mouse-leave="{{trailLeave}}">
+  <div class="dots" aria-hidden="true"></div><div class="dots2" aria-hidden="true"></div>
+  <div class="cols" aria-hidden="true"><i></i><i></i><i></i></div>
+
+  <div class="row nav" style="position:absolute;left:32px;right:32px;top:26px;gap:18px">
+    <span class="b-small">DryRun</span><span class="b-small" style="opacity:.85">rehearses every migration</span><span class="b-small" style="opacity:.85">Mysuru · Bengaluru</span>
+    <a href="#" class="b-small" style="margin-left:auto">Docs</a><a href="#" class="b-small">Sign in</a>
+  </div>
+
+  <div class="col" style="position:absolute;left:32px;top:300px;gap:26px;max-width:1100px">
+    <span class="b-rule"></span>
+    <span class="b-head">Welcome to DryRun.</span>
+    <span style="font:400 italic 30px/1.25 'Instrument Serif',serif;max-width:720px;text-shadow:0 1px 12px rgba(120,20,60,.2)">Nothing touches production until it survives here.</span>
+    <div class="row" style="gap:12px;padding-top:10px">
+      <a href="#" class="btn btn-lg btn-spark" style="background:#FFFFFF;color:#B8386E;border:0">Start a rehearsal</a>
+      <a href="#" class="btn btn-lg btn-spark" style="background:rgba(255,255,255,.14);color:#FFFFFF;border:1px solid rgba(255,255,255,.55)">See a sample report</a>
+    </div>
+  </div>
+
+  <!-- decorative flower with sparkle arc -->
+  <div class="float" aria-hidden="true" style="position:absolute;right:170px;top:170px;width:420px;height:260px">
+    <svg width="420" height="260" sc-camel-view-box="0 0 420 260" style="position:absolute;inset:0">
+      <path d="M10 60 C120 20 220 40 300 170" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="1" stroke-dasharray="2 7"></path>
+      <g fill="#FFFFFF"><text x="30" y="58" font-size="16" class="twinkle">✦</text><text x="80" y="42" font-size="11" class="twinkle" style="animation-delay:.4s">✦</text><text x="135" y="36" font-size="18" class="twinkle" style="animation-delay:.8s">✦</text><text x="186" y="48" font-size="10" class="twinkle" style="animation-delay:1.2s">✦</text><text x="228" y="74" font-size="14" class="twinkle" style="animation-delay:.2s">✦</text><text x="262" y="112" font-size="9" class="twinkle" style="animation-delay:1s">✦</text><circle cx="110" cy="52" r="2.5" class="twinkle"></circle><circle cx="206" cy="60" r="2" class="twinkle" style="animation-delay:.6s"></circle></g>
+    </svg>
+    <div style="position:absolute;left:258px;top:130px;filter:drop-shadow(0 0 22px rgba(255,255,255,.55))">
+      <svg width="120" height="120" sc-camel-view-box="-23 -23 46 46">
+        <g transform="rotate(0)"><ellipse class="petal" cx="0" cy="-10" rx="7.5" ry="10.5" fill="#FFFFFF" style="animation-delay:.1s"></ellipse></g>
+        <g transform="rotate(72)"><ellipse class="petal" cx="0" cy="-10" rx="7.5" ry="10.5" fill="#FFFFFF" style="animation-delay:.25s"></ellipse></g>
+        <g transform="rotate(144)"><ellipse class="petal" cx="0" cy="-10" rx="7.5" ry="10.5" fill="#FFFFFF" style="animation-delay:.4s"></ellipse></g>
+        <g transform="rotate(216)"><ellipse class="petal" cx="0" cy="-10" rx="7.5" ry="10.5" fill="#FFFFFF" style="animation-delay:.55s"></ellipse></g>
+        <g transform="rotate(288)"><ellipse class="petal" cx="0" cy="-10" rx="7.5" ry="10.5" fill="#FFFFFF" style="animation-delay:.7s"></ellipse></g>
+        <circle r="6" fill="#FFD7E5"></circle><circle r="3" fill="#F0507A"></circle>
+      </svg>
+    </div>
+  </div>
+
+  <!-- hero data strip -->
+  <div class="row" style="position:absolute;left:32px;right:32px;bottom:96px;gap:0">
+    <div class="col" style="flex:1;gap:6px"><span class="num tab" style="font-size:44px;color:#FFFFFF">{{a}}</span><span class="b-small" style="opacity:.9">rows protected this week</span></div>
+    <div class="col" style="flex:1;gap:6px;padding-left:24px"><span class="num tab" style="font-size:44px;color:#FFFFFF">{{b}}</span><span class="b-small" style="opacity:.9">migrations stopped before prod</span></div>
+    <div class="col" style="flex:1;gap:6px;padding-left:24px"><span class="num tab" style="font-size:44px;color:#FFFFFF">{{c}}%</span><span class="b-small" style="opacity:.9">rollbacks proven identical</span></div>
+    <div class="col" style="flex:1;gap:6px;padding-left:24px"><span class="num tab" style="font-size:44px;color:#FFFFFF">0</span><span class="b-small" style="opacity:.9">writes to production during rehearsal</span></div>
+  </div>
+
+  <div class="row" style="position:absolute;left:32px;right:32px;bottom:22px">
+    <a href="#" class="b-small" style="color:#FFF7F2;text-decoration:none">Security</a>
+    <div style="position:absolute;left:50%;transform:translateX(-50%);width:26px;height:40px;border:1.5px solid rgba(255,255,255,.8);border-radius:13px" aria-hidden="true"><span class="float" style="position:absolute;left:11px;top:8px;width:2px;height:8px;border-radius:1px;background:#FFFFFF"></span></div>
+    <a href="#" class="b-small" style="margin-left:auto;color:#FFF7F2;text-decoration:none">Contact</a>
+  </div>
+
+  <sc-for list="{{sparks}}" as="s" hint-placeholder-count="0"><span class="spk" style="{{s.st}}">{{s.g}}</span></sc-for>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script="" data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:900}}">
+class Component extends DCLogic {
+  componentDidMount() {
+    this.W = 1440; this.sp = []; this.sid = 0; this.fl = null;
+    this.reduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    this.t0 = performance.now();
+    const loop = () => {
+      const now = performance.now();
+      const busy = this.sp.length > 0 || this.dirty || now - this.t0 < 1900;
+      if (this.sp.length) this.sp = this.sp.filter((s) => now - s.t < 900);
+      if (busy) { this.dirty = false; this.forceUpdate(); }
+      this.raf = requestAnimationFrame(loop);
+    };
+    this.raf = requestAnimationFrame(loop);
+  }
+  componentWillUnmount() { cancelAnimationFrame(this.raf); }
+  trailMove(e) {
+    const r = e.currentTarget.getBoundingClientRect(); const k = r.width / this.W || 1;
+    const x = (e.clientX - r.left) / k, y = (e.clientY - r.top) / k; this.fl = { x, y }; this.dirty = true;
+    const now = performance.now();
+    if (!this.reduce && (!this.lastSp || now - this.lastSp > 32)) {
+      this.lastSp = now;
+      for (let i = 0; i < 2; i++) this.sp.push({ id: this.sid++, x: x + (Math.random() * 34 - 17), y: y + (Math.random() * 34 - 17), t: now, s: 9 + Math.random() * 13, c: Math.random() < 0.55 ? '#E8458F' : '#F49AC4', dy: 10 + Math.random() * 26, dx: Math.random() * 16 - 8, g: '✦' });
+      if (this.sp.length > 60) this.sp.splice(0, this.sp.length - 60);
+    }
+  }
+  renderVals() {
+    const now = performance.now();
+    const p = this.t0 ? Math.min(1, (now - this.t0) / 1800) : 1;
+    const e = 1 - Math.pow(1 - p, 3);
+    return {
+      a: Math.round(128492 * e).toLocaleString('en-US'),
+      b: String(Math.round(7 * e)).padStart(2, '0'),
+      c: Math.round(100 * e),
+      trailMove: (ev) => this.trailMove(ev),
+      trailLeave: () => { this.fl = null; this.dirty = true; },
+      flOn: !!this.fl, flX: this.fl ? this.fl.x : 0, flY: this.fl ? this.fl.y : 0,
+      sparks: (this.sp || []).map((s) => { const a = Math.min(1, (now - s.t) / 900); return { id: s.id, g: s.g, st: 'left:' + (s.x + s.dx * a).toFixed(1) + 'px;top:' + (s.y + s.dy * a).toFixed(1) + 'px;font-size:' + (s.s * (1 - a * 0.5)).toFixed(1) + 'px;color:' + s.c + ';opacity:' + (1 - a).toFixed(2) }; })
+    };
+  }
+}
+</script>
+
+
+</body></html>

@@ -1,0 +1,145 @@
+
+<div class="pm app dark" style="width:1440px;height:1180px" sc-camel-on-mouse-move="{{trailMove}}" sc-camel-on-mouse-leave="{{trailLeave}}">
+  <div class="atmo" aria-hidden="true"><div class="l1" style="background:#5A2A45"></div><div class="l2" style="background:#3A2C5E"></div><div class="l3" style="background:#5A3A2A"></div></div>
+  <aside class="side" aria-label="Primary">
+    <div class="brand"><svg width="26" height="26" sc-camel-view-box="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="11" fill="none" stroke="#F08AB0" stroke-width="1.4"></circle><circle cx="13" cy="13" r="6" fill="none" stroke="#B9A2F0" stroke-width="1.4" stroke-dasharray="2 2.5"></circle><circle cx="13" cy="13" r="2" fill="#F6EDF3"></circle></svg>DryRun</div>
+    <a href="#"><svg width="17" height="17" sc-camel-view-box="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><rect x="2" y="2" width="5" height="5" rx="1.2"></rect><rect x="9" y="2" width="5" height="5" rx="1.2"></rect><rect x="2" y="9" width="5" height="5" rx="1.2"></rect><rect x="9" y="9" width="5" height="5" rx="1.2"></rect></svg>Overview</a>
+    <a href="#" class="on"><svg width="17" height="17" sc-camel-view-box="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M1 8h3l2-5 3 10 2-5h4"></path></svg>Rehearsals</a>
+    <a href="#"><svg width="17" height="17" sc-camel-view-box="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M3 8.5l3 3 7-7"></path></svg>Approvals<span class="badge">2</span></a>
+    <a href="#"><svg width="17" height="17" sc-camel-view-box="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><ellipse cx="8" cy="4" rx="5" ry="2"></ellipse><path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"></path></svg>Databases</a>
+    <a href="#"><svg width="17" height="17" sc-camel-view-box="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M8 1.5l5 2.5v4c0 3.2-2.4 5.3-5 6.5-2.6-1.2-5-3.3-5-6.5V4z"></path></svg>Policies</a>
+    <a href="#"><svg width="17" height="17" sc-camel-view-box="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M4 1.5h8v13H4zM6.5 5h3M6.5 8h3M6.5 11h2"></path></svg>Audit Log</a>
+    <a href="#"><svg width="17" height="17" sc-camel-view-box="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M6 1.5v4M10 1.5v4M4 5.5h8v3a4 4 0 01-8 0zM8 12.5v2"></path></svg>Integrations</a>
+    <a href="#"><svg width="17" height="17" sc-camel-view-box="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><circle cx="8" cy="8" r="2.2"></circle><path d="M8 1.5v2M8 12.5v2M1.5 8h2M12.5 8h2M3.4 3.4l1.4 1.4M11.2 11.2l1.4 1.4M3.4 12.6l1.4-1.4M11.2 4.8l1.4-1.4"></path></svg>Settings</a>
+    <div class="col" style="margin-top:auto;gap:4px;padding:12px 10px;border-top:1px solid rgba(255,226,245,.12)"><span style="font:600 13px/1.2 'Manrope',sans-serif">Maya Chen</span><span class="eyebrow">engineer · plum theme</span></div>
+  </aside>
+
+  <div class="col above" style="min-width:0">
+    <div class="top">
+      <div class="crumb">Rehearsals / <b>003_add_unique_email · V1</b></div>
+      <span class="env env-sb" style="margin-left:auto;background:#23302A;color:#9CC99A;border-color:#9CC99A"><span class="dot breathe"></span>SANDBOX · sandbox_8F92</span>
+      <span class="st st-safe" style="background:#23302A;color:#9CC99A;border-color:rgba(156,201,154,.35)">✓ production writes blocked</span>
+      <div class="avatar" style="background:#322748;color:#C9B6F6" aria-label="Maya Chen">MC</div>
+    </div>
+
+    <div class="col" style="padding:34px 48px 30px;gap:28px;flex-grow:1;min-height:0">
+      <div class="col" style="gap:12px">
+        <span class="eyebrow">Rehearsal 003 · shop-prod <span style="color:#F08AB0">→</span> sandbox_8F92 · dark plum</span>
+        <span class="display" style="font-size:72px">Let’s find out what breaks.</span>
+      </div>
+
+      <div class="glass" style="padding:26px 28px 22px">
+        <div class="row" style="position:relative;align-items:flex-start">
+          <div style="position:absolute;left:7%;right:7%;top:16px;height:2px;background:rgba(255,226,245,.12)"></div>
+          <div class="grow-x" style="position:absolute;left:7%;width:{{fillW}};top:16px;height:2px;background:linear-gradient(90deg,#F08AB0,#EFA77E 45%,#9CC99A)"></div>
+          <div class="node"><span class="o" style="background:#F08AB0;color:#1D1520">✓</span><span class="nm">Production<br>copy</span><span class="tm">4.8s</span></div>
+          <div class="node"><span class="o" style="background:#F08AB0;color:#1D1520">✓</span><span class="nm">Snapshot</span><span class="tm">1.1s</span></div>
+          <div class="node"><span class="o" style="background:#EFA77E;color:#1D1520">△</span><span class="nm">Migration</span><span class="tm" style="color:#EFA77E">rejected · 23505</span></div>
+          <div class="node"><span class="o pulse" style="background:#1D1520;border-color:#9CC99A;color:#9CC99A">◉</span><span class="nm" style="color:#9CC99A">Compare</span><span class="tm" style="color:#9CC99A">{{pct}}</span></div>
+          <div class="node"><span class="o" style="background:#1D1520;border:1px dashed #B9A2F0;color:#B9A2F0">○</span><span class="nm muted">AI checks</span><span class="tm">queued</span></div>
+          <div class="node"><span class="o" style="background:#1D1520;border:1px dashed #9CC99A;color:#9CC99A">○</span><span class="nm muted">Rollback</span><span class="tm">—</span></div>
+          <div class="node"><span class="o" style="background:#1D1520;border:1px dashed #F08AB0;color:#F08AB0">○</span><span class="nm muted">Report</span><span class="tm">—</span></div>
+        </div>
+      </div>
+
+      <div class="row grid-bg" style="align-items:stretch;padding:18px 4px;border-top:1px solid rgba(255,226,245,.12);border-bottom:1px solid rgba(255,226,245,.12)">
+        <div class="lm" style="flex:1.4"><span class="num tab" style="font-size:54px">{{rows}}</span><span class="eyebrow">rows scanned</span></div>
+        <div class="lm" style="flex:1"><span class="num tab" style="font-size:54px">04</span><span class="eyebrow">tables</span></div>
+        <div class="lm" style="flex:1"><span class="num tab" style="font-size:54px">{{checks}}</span><span class="eyebrow">checks</span></div>
+        <div class="lm" style="flex:1"><span class="num tab" style="font-size:54px">{{elapsed}}<span style="font-size:24px;color:#BBA9BE">s</span></span><span class="eyebrow">elapsed</span></div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:minmax(0,1.3fr) 340px;gap:22px;flex-grow:1;min-height:0">
+        <div class="col" style="gap:14px">
+          <div class="glass rise" style="padding:24px 26px;display:flex;flex-direction:column;gap:12px;border-color:rgba(240,138,176,.35);box-shadow:0 18px 40px rgba(240,138,176,.12)">
+            <div class="row" style="gap:10px"><span class="eyebrow" style="color:#F08AB0">Issue discovered · 14:32:14</span><span class="st st-ai" style="margin-left:auto;background:#322748;color:#C9B6F6;border-color:rgba(185,162,240,.3)">◇ AI check</span></div>
+            <div class="row" style="gap:18px;align-items:flex-end"><span class="serif" style="font-size:96px;line-height:.8;color:#FF8FAE">38</span><span style="font:500 11px/1.3 'DM Mono',monospace;letter-spacing:.16em;padding-bottom:8px">DUPLICATE<br>EMAILS</span></div>
+            <span style="font:500 16px/1.45 'Manrope',sans-serif">Proposed UNIQUE constraint cannot be created.</span>
+            <a href="#" class="btn" style="align-self:flex-start;background:#F08AB0;border-color:#F08AB0;color:#1D1520">Inspect evidence</a>
+          </div>
+          <div class="console" style="padding:14px 18px;white-space:pre;flex-grow:1"><span class="t">14:32:01</span>  sandbox.create     sandbox_8F92
+<span class="t">14:32:07</span>  snapshot.users     10,000 rows
+<span class="t">14:32:08</span>  migration.apply    003_add_unique_email
+<span class="t">14:32:08</span>  <span class="e">ERROR</span> 23505 could not create unique index
+<span class="t">14:32:14</span>  <span class="w">WARN</span>  <span class="a">ai.check</span> 38 duplicate groups</div>
+        </div>
+        <div class="glass col" style="padding:20px 22px;gap:12px;border:1px dashed rgba(156,201,154,.45)">
+          <div class="row" style="justify-content:space-between"><span class="eyebrow" style="color:#9CC99A">Sandbox</span><span class="row mono" style="gap:6px;font-size:11px;color:#9CC99A"><span class="dot breathe"></span>ISOLATED</span></div>
+          <span class="mono" style="font-size:20px">sandbox_8F92</span>
+          <span class="mono muted" style="font-size:12px">PostgreSQL 16</span>
+          <div class="res"><span class="muted">CPU</span><div style="height:6px;border-radius:3px;background:#322748"><div style="height:100%;width:{{cpu}}%;border-radius:3px;background:#B9A2F0"></div></div><span style="text-align:right">{{cpu}}%</span></div>
+          <div class="res"><span class="muted">MEMORY</span><div style="height:6px;border-radius:3px;background:#322748"><div style="height:100%;width:45%;border-radius:3px;background:#B9A2F0"></div></div><span style="text-align:right">1.8 / 4 GB</span></div>
+          <div class="res"><span class="muted">STORAGE</span><div style="height:6px;border-radius:3px;background:#3A271F"><div style="height:100%;width:78%;border-radius:3px;background:#EFA77E"></div></div><span style="text-align:right">11 / 14 GB</span></div>
+          <div class="rule"></div>
+          <div class="row" style="justify-content:space-between"><span class="eyebrow">Auto delete</span><span class="mono tab" style="font-size:18px">{{countdown}}</span></div>
+          <div class="row" style="justify-content:space-between;padding:10px 12px;border-radius:10px;background:#23302A"><span class="eyebrow" style="color:#9CC99A">Production writes</span><span class="mono" style="font-size:12.5px;color:#9CC99A">✓ BLOCKED</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <sc-for list="{{sparks}}" as="s" hint-placeholder-count="0"><span class="spk" style="{{s.st}}">{{s.g}}</span></sc-for>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script="" data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:1180}}">
+class Component extends DCLogic {
+  trailInit() {
+    this.W = 1440; this.sp = []; this.sid = 0; this.fl = null;
+    this.reduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    const loop = () => {
+      const now = performance.now();
+      const busy = this.sp.length > 0 || this.dirty;
+      if (this.sp.length) this.sp = this.sp.filter((s) => now - s.t < 900);
+      if (busy) { this.dirty = false; this.forceUpdate(); }
+      this.trailRaf = requestAnimationFrame(loop);
+    };
+    this.trailRaf = requestAnimationFrame(loop);
+  }
+  trailMove(e) {
+    const r = e.currentTarget.getBoundingClientRect(); const k = r.width / this.W || 1;
+    const x = (e.clientX - r.left) / k, y = (e.clientY - r.top) / k; this.fl = { x, y }; this.dirty = true;
+    const now = performance.now();
+    if (!this.reduce && (!this.lastSp || now - this.lastSp > 32)) {
+      this.lastSp = now;
+      for (let i = 0; i < 2; i++) this.sp.push({ id: this.sid++, x: x + (Math.random() * 34 - 17), y: y + (Math.random() * 34 - 17), t: now, s: 9 + Math.random() * 13, c: Math.random() < 0.55 ? '#E8458F' : '#F49AC4', dy: 10 + Math.random() * 26, dx: Math.random() * 16 - 8, g: '✦' });
+      if (this.sp.length > 60) this.sp.splice(0, this.sp.length - 60);
+    }
+  }
+  trailVals() {
+    const now = performance.now();
+    return {
+      trailMove: (ev) => this.trailMove(ev),
+      trailLeave: () => { this.fl = null; this.dirty = true; },
+      flOn: !!this.fl, flX: this.fl ? this.fl.x : 0, flY: this.fl ? this.fl.y : 0,
+      sparks: (this.sp || []).map((p) => { const a = Math.min(1, (now - p.t) / 900); return { id: p.id, g: p.g, st: 'left:' + (p.x + p.dx * a).toFixed(1) + 'px;top:' + (p.y + p.dy * a).toFixed(1) + 'px;font-size:' + (p.s * (1 - a * 0.5)).toFixed(1) + 'px;color:' + p.c + ';opacity:' + (1 - a).toFixed(2) }; })
+    };
+  }
+  renderVals() { return Object.assign({}, this._rv(), this.trailVals()); }
+
+  componentDidMount() {
+    this.trailInit();
+    this.t0 = performance.now(); this.setState({ t: 0 });
+    const tick = () => { this.setState({ t: ((performance.now() - this.t0) / 1000) % 16 }); this.raf = requestAnimationFrame(tick); };
+    this.raf = requestAnimationFrame(tick);
+  }
+  componentWillUnmount() { cancelAnimationFrame(this.trailRaf); cancelAnimationFrame(this.raf); }
+  _rv() {
+    const s = this.state || {};
+    const t = s.t === undefined ? 9 : s.t;
+    const p = Math.min(1, t / 7);
+    const left = 41 * 60 + 32 - Math.floor(t);
+    return {
+      rows: Math.round(105291 * (1 - Math.pow(1 - p, 2))).toLocaleString('en-US'),
+      checks: String(Math.min(18, Math.floor(t / 9 * 18))).padStart(2, '0'),
+      elapsed: (2.8 + t).toFixed(1),
+      pct: Math.round(p * 100) + '%',
+      fillW: (43 + p * 7).toFixed(1) + '%',
+      cpu: Math.round(42 + 7 * Math.sin(t * 1.7)),
+      countdown: Math.floor(left / 60) + ':' + String(left % 60).padStart(2, '0')
+    };
+  }
+}
+</script>
+
+
+</body></html>

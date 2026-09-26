@@ -1,0 +1,8 @@
+
+body{margin:0;background:#FAF7F9}
+.sg{display:grid;grid-template-columns:36px minmax(0,1fr) 90px;gap:16px;align-items:center;padding:16px 0;border-bottom:1px solid rgba(38,31,41,.12)}
+.sg i{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:600 13px/1 'Manrope',sans-serif;font-style:normal}
+.sg b{font:600 15px/1.2 'Manrope',sans-serif}
+.sg code{font:400 12.5px/1 'DM Mono',monospace;text-align:right;color:#756A78}
+.vk{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(38,31,41,.1);font:400 12.5px/1.2 'DM Mono',monospace}
+.vk span:first-child{font-family:'Manrope',sans-serif;color:#756A78}

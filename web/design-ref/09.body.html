@@ -1,0 +1,143 @@
+
+<div class="pm app" style="width:1440px;height:1000px" sc-camel-on-mouse-move="{{trailMove}}" sc-camel-on-mouse-leave="{{trailLeave}}">
+  <div class="atmo" aria-hidden="true"><div class="l1"></div><div class="l2"></div><div class="l3"></div></div>
+  <aside class="side" aria-label="Primary">
+    <div class="brand"><svg width="26" height="26" sc-camel-view-box="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="11" fill="none" stroke="#D94F87" stroke-width="1.4"></circle><circle cx="13" cy="13" r="6" fill="none" stroke="#7758C8" stroke-width="1.4" stroke-dasharray="2 2.5"></circle><circle cx="13" cy="13" r="2" fill="#261F29"></circle></svg>DryRun</div>
+    <a href="#"><svg width="17" height="17" sc-camel-view-box="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><rect x="2" y="2" width="5" height="5" rx="1.2"></rect><rect x="9" y="2" width="5" height="5" rx="1.2"></rect><rect x="2" y="9" width="5" height="5" rx="1.2"></rect><rect x="9" y="9" width="5" height="5" rx="1.2"></rect></svg>Overview</a>
+    <a href="#" class="on"><svg width="17" height="17" sc-camel-view-box="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M1 8h3l2-5 3 10 2-5h4"></path></svg>Rehearsals</a>
+    <a href="#"><svg width="17" height="17" sc-camel-view-box="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M3 8.5l3 3 7-7"></path></svg>Approvals<span class="badge">2</span></a>
+    <a href="#"><svg width="17" height="17" sc-camel-view-box="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><ellipse cx="8" cy="4" rx="5" ry="2"></ellipse><path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"></path></svg>Databases</a>
+    <a href="#"><svg width="17" height="17" sc-camel-view-box="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M8 1.5l5 2.5v4c0 3.2-2.4 5.3-5 6.5-2.6-1.2-5-3.3-5-6.5V4z"></path></svg>Policies</a>
+    <a href="#"><svg width="17" height="17" sc-camel-view-box="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M4 1.5h8v13H4zM6.5 5h3M6.5 8h3M6.5 11h2"></path></svg>Audit Log</a>
+    <a href="#"><svg width="17" height="17" sc-camel-view-box="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M6 1.5v4M10 1.5v4M4 5.5h8v3a4 4 0 01-8 0zM8 12.5v2"></path></svg>Integrations</a>
+    <a href="#"><svg width="17" height="17" sc-camel-view-box="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><circle cx="8" cy="8" r="2.2"></circle><path d="M8 1.5v2M8 12.5v2M1.5 8h2M12.5 8h2M3.4 3.4l1.4 1.4M11.2 11.2l1.4 1.4M3.4 12.6l1.4-1.4M11.2 4.8l1.4-1.4"></path></svg>Settings</a>
+    <div class="col" style="margin-top:auto;gap:4px;padding:12px 10px;border-top:1px solid var(--line)"><span style="font:600 13px/1.2 'Manrope',sans-serif">Maya Chen</span><span class="eyebrow">engineer</span></div>
+  </aside>
+
+  <div class="col above" style="min-width:0">
+    <div class="top">
+      <div class="crumb">Rehearsals / 003_add_unique_email / Report / <b>Impact map</b></div>
+      <span class="env env-sb" style="margin-left:auto">SANDBOX RESULT · sandbox_8F92</span>
+      <div class="avatar" aria-label="Maya Chen">MC</div>
+    </div>
+
+    <div class="col" style="padding:34px 48px 30px;gap:22px;flex-grow:1;min-height:0">
+      <div class="col" style="gap:10px"><span class="eyebrow">Database impact map · shop-prod snapshot · 4 tables · 105,291 rows</span><span class="h1">One changed table. One that depends on it.</span></div>
+
+      <div style="display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:22px;flex-grow:1;min-height:0">
+        <div class="glass grid-bg" style="position:relative;overflow:hidden">
+          <svg width="100%" height="100%" sc-camel-view-box="0 0 786 760" sc-camel-preserve-aspect-ratio="none" style="position:absolute;inset:0" aria-hidden="true">
+            <path d="M268 240 C360 240 380 160 470 160" fill="none" stroke="{{e1}}" stroke-width="{{w1}}" class="flow"></path>
+            <path d="M600 200 C650 270 650 320 600 370" fill="none" stroke="{{e2}}" stroke-width="{{w2}}"></path>
+            <path d="M520 200 C520 300 430 450 358 475" fill="none" stroke="{{e3}}" stroke-width="{{w3}}"></path>
+            <g font-family="DM Mono" font-size="10" fill="#756A78"><text x="300" y="228">orders.user_id → users.id</text><text x="648" y="290">payments.order_id</text><text x="400" y="360">orders.product_id</text></g>
+            <g font-family="DM Mono" font-size="9" fill="#B3A5B6"><text x="12" y="18">x 000</text><text x="730" y="18">x 786</text><text x="12" y="700">y 760</text></g>
+          </svg>
+          <button type="button" class="nd {{uHalo}}" sc-camel-on-click="{{selUsers}}" aria-pressed="{{uPressed}}" style="left:100px;top:200px;background:#FFD7E5;border:{{uBorder}};opacity:{{uOp}}"><b style="color:#B8386E">✕ users</b><span>DIRECT · UNIQUE(email)</span><span>10,000 rows · 38 issues</span></button>
+          <button type="button" class="nd" sc-camel-on-click="{{selOrders}}" aria-pressed="{{oPressed}}" style="left:470px;top:120px;background:#FFE4CC;border:{{oBorder}};opacity:{{oOp}}"><b style="color:#A3552F">△ orders</b><span>INDIRECT · via user_id</span><span>48,210 rows · 41 refs</span></button>
+          <button type="button" class="nd" sc-camel-on-click="{{selPayments}}" aria-pressed="{{pPressed}}" style="left:470px;top:370px;background:#EEE7FF;border:{{pBorder}};opacity:{{pOp}}"><b style="color:#6A4FB8">payments</b><span>UNCHANGED</span><span>45,877 rows</span></button>
+          <button type="button" class="nd" sc-camel-on-click="{{selProducts}}" aria-pressed="{{rPressed}}" style="left:190px;top:440px;background:#E6F2DF;border:{{rBorder}};opacity:{{rOp}}"><b style="color:#47705A">products</b><span>UNCHANGED</span><span>1,204 rows</span></button>
+          <div class="row" style="position:absolute;left:20px;bottom:18px;gap:16px;font:400 11px/1 'DM Mono',monospace;color:var(--text2)">
+            <span class="row" style="gap:6px"><i style="width:14px;height:14px;border-radius:4px;background:#FFD7E5;border:2px solid #D94F87"></i>directly changed</span>
+            <span class="row" style="gap:6px"><i style="width:14px;height:14px;border-radius:4px;background:#FFE4CC;border:1px dashed #C56F45"></i>indirectly affected</span>
+            <span class="row" style="gap:6px"><i style="width:14px;height:14px;border-radius:4px;background:#FFFFFF;border:1px solid var(--line2)"></i>unchanged</span>
+            <span>click a table</span>
+          </div>
+        </div>
+
+        <div class="col" style="gap:18px">
+          <div class="glass" style="padding:22px 24px;display:flex;flex-direction:column;gap:6px">
+            <span class="eyebrow">Selected table</span>
+            <span class="mono" style="font-size:24px">{{name}}</span>
+            <div class="row" style="gap:28px;padding:10px 0 6px">
+              <div class="col" style="gap:4px"><span class="eyebrow">Rows</span><span class="num" style="font-size:34px">{{rows}}</span></div>
+              <div class="col" style="gap:4px"><span class="eyebrow">Issues</span><span class="num" style="font-size:34px;color:{{issueColor}}">{{issues}}</span></div>
+            </div>
+            <div class="kv"><span>Change</span><span>{{change}}</span></div>
+            <div class="kv"><span>Constraints</span><span>{{cons}}</span></div>
+            <div class="kv"><span>Relationships</span><span>{{rels}}</span></div>
+            <div class="kv"><span>Detected risk</span><span>{{risk}}</span></div>
+          </div>
+          <div class="panel" style="padding:18px 20px">
+            <span class="eyebrow">Blast radius</span>
+            <div class="bl"><span style="color:#47705A">✓</span><span>Verified in schema</span><span class="mono" style="font-size:11.5px">orders.user_id</span></div>
+            <div class="bl" style="color:var(--text2)"><span>◌</span><span>Possible app impact · <i>not verified</i></span><span></span></div>
+            <div class="row" style="gap:6px;flex-wrap:wrap;padding-top:10px"><span class="st st-info">authentication</span><span class="st st-info">checkout</span><span class="st st-info">email notifications</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <sc-for list="{{sparks}}" as="s" hint-placeholder-count="0"><span class="spk" style="{{s.st}}">{{s.g}}</span></sc-for>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script="" data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:1000}}">
+class Component extends DCLogic {
+  componentWillUnmount() { cancelAnimationFrame(this.trailRaf); }
+  componentDidMount() { this.trailInit(); }
+  trailInit() {
+    this.W = 1440; this.sp = []; this.sid = 0; this.fl = null;
+    this.reduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    const loop = () => {
+      const now = performance.now();
+      const busy = this.sp.length > 0 || this.dirty;
+      if (this.sp.length) this.sp = this.sp.filter((s) => now - s.t < 900);
+      if (busy) { this.dirty = false; this.forceUpdate(); }
+      this.trailRaf = requestAnimationFrame(loop);
+    };
+    this.trailRaf = requestAnimationFrame(loop);
+  }
+  trailMove(e) {
+    const r = e.currentTarget.getBoundingClientRect(); const k = r.width / this.W || 1;
+    const x = (e.clientX - r.left) / k, y = (e.clientY - r.top) / k; this.fl = { x, y }; this.dirty = true;
+    const now = performance.now();
+    if (!this.reduce && (!this.lastSp || now - this.lastSp > 32)) {
+      this.lastSp = now;
+      for (let i = 0; i < 2; i++) this.sp.push({ id: this.sid++, x: x + (Math.random() * 34 - 17), y: y + (Math.random() * 34 - 17), t: now, s: 9 + Math.random() * 13, c: Math.random() < 0.55 ? '#E8458F' : '#F49AC4', dy: 10 + Math.random() * 26, dx: Math.random() * 16 - 8, g: '✦' });
+      if (this.sp.length > 60) this.sp.splice(0, this.sp.length - 60);
+    }
+  }
+  trailVals() {
+    const now = performance.now();
+    return {
+      trailMove: (ev) => this.trailMove(ev),
+      trailLeave: () => { this.fl = null; this.dirty = true; },
+      flOn: !!this.fl, flX: this.fl ? this.fl.x : 0, flY: this.fl ? this.fl.y : 0,
+      sparks: (this.sp || []).map((p) => { const a = Math.min(1, (now - p.t) / 900); return { id: p.id, g: p.g, st: 'left:' + (p.x + p.dx * a).toFixed(1) + 'px;top:' + (p.y + p.dy * a).toFixed(1) + 'px;font-size:' + (p.s * (1 - a * 0.5)).toFixed(1) + 'px;color:' + p.c + ';opacity:' + (1 - a).toFixed(2) }; })
+    };
+  }
+  renderVals() { return Object.assign({}, this._rv(), this.trailVals()); }
+
+  _rv() {
+    const sel = (this.state && this.state.sel) || 'users';
+    const T = {
+      users: { name: 'users', rows: '10,000', issues: '38', issueColor: '#A8234F', change: 'ADD UNIQUE(email)', cons: 'pk · unique_email (failed)', rels: '1 inbound · orders', risk: 'duplicates · 23505' },
+      orders: { name: 'orders', rows: '48,210', issues: '41', issueColor: '#A3552F', change: 'none', cons: 'fk user_id → users', rels: 'users · payments · products', risk: '41 refs to duplicates' },
+      payments: { name: 'payments', rows: '45,877', issues: '0', issueColor: '#47705A', change: 'none', cons: 'fk order_id → orders', rels: 'orders', risk: 'none detected' },
+      products: { name: 'products', rows: '1,204', issues: '0', issueColor: '#47705A', change: 'none', cons: 'pk · sku unique', rels: 'orders', risk: 'none detected' }
+    };
+    const conn = { users: ['users', 'orders'], orders: ['orders', 'users', 'payments', 'products'], payments: ['payments', 'orders'], products: ['products', 'orders'] }[sel];
+    const on = (n) => conn.indexOf(n) >= 0;
+    const edge = (a, b) => on(a) && on(b) && (sel === a || sel === b);
+    const pick = (n) => () => this.setState({ sel: n });
+    const t = T[sel];
+    return Object.assign({}, t, {
+      selUsers: pick('users'), selOrders: pick('orders'), selPayments: pick('payments'), selProducts: pick('products'),
+      uHalo: sel === 'users' ? 'halo' : '',
+      uBorder: sel === 'users' ? '2px solid #D94F87' : '1px solid #D94F87',
+      oBorder: sel === 'orders' ? '2px solid #C56F45' : '1px dashed #C56F45',
+      pBorder: sel === 'payments' ? '2px solid #7758C8' : '1px solid rgba(76,54,78,.2)',
+      rBorder: sel === 'products' ? '2px solid #47705A' : '1px solid rgba(76,54,78,.2)',
+      uOp: on('users') ? 1 : 0.45, oOp: on('orders') ? 1 : 0.45, pOp: on('payments') ? 1 : 0.45, rOp: on('products') ? 1 : 0.45,
+      uPressed: sel === 'users' ? 'true' : 'false', oPressed: sel === 'orders' ? 'true' : 'false', pPressed: sel === 'payments' ? 'true' : 'false', rPressed: sel === 'products' ? 'true' : 'false',
+      e1: edge('users', 'orders') ? '#D94F87' : 'rgba(76,54,78,.18)', w1: edge('users', 'orders') ? 2.4 : 1.2,
+      e2: edge('orders', 'payments') ? '#7758C8' : 'rgba(76,54,78,.18)', w2: edge('orders', 'payments') ? 2.4 : 1.2,
+      e3: edge('orders', 'products') ? '#47705A' : 'rgba(76,54,78,.18)', w3: edge('orders', 'products') ? 2.4 : 1.2
+    });
+  }
+}
+</script>
+
+
+</body></html>

@@ -1,0 +1,7 @@
+
+body{margin:0;background:#FFF8FB}
+.sb{padding:24px;display:flex;flex-direction:column;gap:12px;min-height:0}
+.ld{display:grid;grid-template-columns:22px minmax(0,1fr) 70px;gap:12px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line);font:500 14px/1.2 'Manrope',sans-serif}
+.ld code{font:400 11.5px/1 'DM Mono',monospace;text-align:right;color:var(--text2)}
+.shim{height:12px;border-radius:6px;background:linear-gradient(90deg,#F4EAF1 0%,#FFFFFF 50%,#F4EAF1 100%);background-size:200% 100%;animation:sh 1.6s linear infinite}
+@keyframes sh{0%{background-position:100% 0}100%{background-position:-100% 0}}

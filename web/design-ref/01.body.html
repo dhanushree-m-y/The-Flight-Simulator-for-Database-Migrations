@@ -1,0 +1,130 @@
+
+<div class="pm grid-bg" style="width:1440px;height:1000px;padding:48px 64px;display:flex;flex-direction:column;gap:28px" sc-camel-on-mouse-move="{{trailMove}}" sc-camel-on-mouse-leave="{{trailLeave}}">
+  <div class="atmo" aria-hidden="true"><div class="l1"></div><div class="l2"></div></div>
+  <div class="above row" style="justify-content:space-between;align-items:flex-end">
+    <div class="col" style="gap:10px"><span class="eyebrow">Motion system · every movement reports system activity</span><span class="h1" style="font-size:56px">Things move because work is happening.</span></div>
+    <span class="spec" style="max-width:360px;text-align:right">easing cubic-bezier(.2,.8,.2,1) · 200–900ms · no bounce · reduced-motion = instant state swap</span>
+  </div>
+
+  <div class="above" style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));gap:18px;flex-grow:1">
+    <div class="glass demo">
+      <span class="eyebrow">01 · Numbers count up</span>
+      <span class="num tab" style="font-size:64px">{{rows}}</span>
+      <span class="eyebrow">rows protected</span>
+      <span class="spec">1.6s ease-out · on load and on new data</span>
+    </div>
+    <div class="glass demo">
+      <span class="eyebrow">02 · Charts draw themselves</span>
+      <svg width="100%" height="110" sc-camel-view-box="0 0 280 110" aria-hidden="true">
+        <line x1="0" y1="100" x2="280" y2="100" stroke="rgba(76,54,78,.12)"></line>
+        <path d="M0 84 C30 80 40 60 70 64 S120 40 150 50 S200 20 230 30 S260 14 280 18" fill="none" stroke="#7758C8" stroke-width="2" style="stroke-dasharray:600;animation:redraw 4s cubic-bezier(.4,.1,.2,1) infinite"></path>
+      </svg>
+      <span class="spec">stroke-dashoffset · 2.2s · once per load</span>
+    </div>
+    <div class="glass demo">
+      <span class="eyebrow">03 · Connectors fill as stages pass</span>
+      <div style="position:relative;height:28px;margin-top:20px">
+        <div style="position:absolute;left:0;right:0;top:13px;height:2px;background:var(--line2)"></div>
+        <div style="position:absolute;left:0;top:13px;height:2px;background:linear-gradient(90deg,#F4B8CC,#CBB8F6,#BFD9B5);animation:fillx 4s ease-in-out infinite"></div>
+        <div class="row" style="position:absolute;inset:0;justify-content:space-between">
+          <span style="width:26px;height:26px;border-radius:50%;background:#F4B8CC"></span><span style="width:26px;height:26px;border-radius:50%;background:#CBB8F6"></span><span style="width:26px;height:26px;border-radius:50%;background:#BFD9B5"></span><span style="width:26px;height:26px;border-radius:50%;background:#FFFFFF;border:1px solid var(--line2)"></span>
+        </div>
+      </div>
+      <span class="spec">240ms per segment · colour follows phase family</span>
+    </div>
+    <div class="glass demo">
+      <span class="eyebrow">04 · Sandbox breathes while active</span>
+      <span class="env env-sb" style="align-self:flex-start;margin-top:14px"><span class="dot breathe"></span>SANDBOX · ISOLATED</span>
+      <span class="spec">opacity 1 → .45 · 2.6s · stops when sandbox is deleted</span>
+    </div>
+    <div class="glass demo">
+      <span class="eyebrow">05 · Nodes pulse while inspected</span>
+      <div class="row" style="gap:22px;margin-top:14px">
+        <span class="halo" style="display:inline-flex;align-items:center;justify-content:center;width:78px;height:40px;border-radius:12px;background:#FFD7E5;border:2px solid #D94F87;font:500 12px/1 'DM Mono',monospace;color:#B8386E">users</span>
+        <span style="display:inline-flex;align-items:center;justify-content:center;width:78px;height:40px;border-radius:12px;background:#FFE4CC;border:1px solid #C56F45;font:500 12px/1 'DM Mono',monospace;color:#A3552F">orders</span>
+      </div>
+      <span class="spec">halo 2.4s · only on the table being scanned</span>
+    </div>
+    <div class="glass demo">
+      <span class="eyebrow">06 · Evidence panels rise</span>
+      <div class="glass" style="padding:12px 14px;animation:riseloop 5s ease-out infinite;border-color:#CBB8F6">
+        <span class="eyebrow" style="color:#B8386E">issue discovered</span>
+        <div class="row" style="gap:10px"><span class="serif" style="font-size:40px">38</span><span style="font:600 13px/1.3 'Manrope',sans-serif">duplicate emails</span></div>
+      </div>
+      <span class="spec">translateY 14 → 0 · .9s · glass blur settles</span>
+    </div>
+    <div class="glass demo">
+      <span class="eyebrow">07 · Rollback travels backward</span>
+      <div style="position:relative;height:40px;margin-top:10px">
+        <div style="position:absolute;left:0;right:0;top:19px;height:2px;background:linear-gradient(90deg,#BFD9B5,#CBB8F6,#F4B8CC)"></div>
+        <span style="position:absolute;top:9px;width:22px;height:22px;border-radius:50%;background:#47705A;box-shadow:0 0 0 6px rgba(71,112,90,.15);animation:back 3.5s ease-in-out infinite"></span>
+      </div>
+      <span class="spec">marker runs report → snapshot, then “identical” locks</span>
+    </div>
+    <div class="glass demo">
+      <span class="eyebrow">08 · Risk lines settle into place</span>
+      <div class="col" style="gap:8px;margin-top:6px">
+        <div style="height:8px;border-radius:4px;background:#F4B8CC;width:92%" class="grow-x"></div>
+        <div style="height:8px;border-radius:4px;background:#F7C59F;width:44%;animation-delay:.2s" class="grow-x"></div>
+        <div style="height:8px;border-radius:4px;background:#CBB8F6;width:20%;animation-delay:.4s" class="grow-x"></div>
+      </div>
+      <span class="spec">scaleX 0 → 1 · staggered 200ms · recalculates on new version</span>
+    </div>
+  </div>
+  <sc-for list="{{sparks}}" as="s" hint-placeholder-count="0"><span class="spk" style="{{s.st}}">{{s.g}}</span></sc-for>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script="" data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:1000}}">
+class Component extends DCLogic {
+  trailInit() {
+    this.W = 1440; this.sp = []; this.sid = 0; this.fl = null;
+    this.reduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    const loop = () => {
+      const now = performance.now();
+      const busy = this.sp.length > 0 || this.dirty;
+      if (this.sp.length) this.sp = this.sp.filter((s) => now - s.t < 900);
+      if (busy) { this.dirty = false; this.forceUpdate(); }
+      this.trailRaf = requestAnimationFrame(loop);
+    };
+    this.trailRaf = requestAnimationFrame(loop);
+  }
+  trailMove(e) {
+    const r = e.currentTarget.getBoundingClientRect(); const k = r.width / this.W || 1;
+    const x = (e.clientX - r.left) / k, y = (e.clientY - r.top) / k; this.fl = { x, y }; this.dirty = true;
+    const now = performance.now();
+    if (!this.reduce && (!this.lastSp || now - this.lastSp > 32)) {
+      this.lastSp = now;
+      for (let i = 0; i < 2; i++) this.sp.push({ id: this.sid++, x: x + (Math.random() * 34 - 17), y: y + (Math.random() * 34 - 17), t: now, s: 9 + Math.random() * 13, c: Math.random() < 0.55 ? '#E8458F' : '#F49AC4', dy: 10 + Math.random() * 26, dx: Math.random() * 16 - 8, g: '✦' });
+      if (this.sp.length > 60) this.sp.splice(0, this.sp.length - 60);
+    }
+  }
+  trailVals() {
+    const now = performance.now();
+    return {
+      trailMove: (ev) => this.trailMove(ev),
+      trailLeave: () => { this.fl = null; this.dirty = true; },
+      flOn: !!this.fl, flX: this.fl ? this.fl.x : 0, flY: this.fl ? this.fl.y : 0,
+      sparks: (this.sp || []).map((p) => { const a = Math.min(1, (now - p.t) / 900); return { id: p.id, g: p.g, st: 'left:' + (p.x + p.dx * a).toFixed(1) + 'px;top:' + (p.y + p.dy * a).toFixed(1) + 'px;font-size:' + (p.s * (1 - a * 0.5)).toFixed(1) + 'px;color:' + p.c + ';opacity:' + (1 - a).toFixed(2) }; })
+    };
+  }
+  renderVals() { return Object.assign({}, this._rv(), this.trailVals()); }
+
+  componentDidMount() {
+    this.trailInit();
+    this.t0 = performance.now();
+    const tick = () => { this.setState({ p: ((performance.now() - this.t0) % 5000) / 5000 }); this.raf = requestAnimationFrame(tick); };
+    this.raf = requestAnimationFrame(tick);
+  }
+  componentWillUnmount() { cancelAnimationFrame(this.trailRaf); cancelAnimationFrame(this.raf); }
+  _rv() {
+    const s = this.state || {};
+    const p = s.p === undefined ? 1 : Math.min(1, s.p / 0.4);
+    const e = 1 - Math.pow(1 - p, 3);
+    return { rows: Math.round(128492 * e).toLocaleString('en-US') };
+  }
+}
+</script>
+
+
+</body></html>

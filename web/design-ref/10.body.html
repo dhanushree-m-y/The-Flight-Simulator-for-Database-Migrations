@@ -1,0 +1,136 @@
+
+<div class="pm app" style="width:1440px;height:1080px" sc-camel-on-mouse-move="{{trailMove}}" sc-camel-on-mouse-leave="{{trailLeave}}">
+  <div class="atmo" aria-hidden="true"><div class="l1" style="background:#EEE7FF"></div><div class="l2"></div><div class="l3"></div></div>
+  <aside class="side" aria-label="Primary">
+    <div class="brand"><svg width="26" height="26" sc-camel-view-box="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="11" fill="none" stroke="#D94F87" stroke-width="1.4"></circle><circle cx="13" cy="13" r="6" fill="none" stroke="#7758C8" stroke-width="1.4" stroke-dasharray="2 2.5"></circle><circle cx="13" cy="13" r="2" fill="#261F29"></circle></svg>DryRun</div>
+    <a href="#"><svg width="17" height="17" sc-camel-view-box="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><rect x="2" y="2" width="5" height="5" rx="1.2"></rect><rect x="9" y="2" width="5" height="5" rx="1.2"></rect><rect x="2" y="9" width="5" height="5" rx="1.2"></rect><rect x="9" y="9" width="5" height="5" rx="1.2"></rect></svg>Overview</a>
+    <a href="#" class="on"><svg width="17" height="17" sc-camel-view-box="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M1 8h3l2-5 3 10 2-5h4"></path></svg>Rehearsals</a>
+    <a href="#"><svg width="17" height="17" sc-camel-view-box="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M3 8.5l3 3 7-7"></path></svg>Approvals<span class="badge">2</span></a>
+    <a href="#"><svg width="17" height="17" sc-camel-view-box="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><ellipse cx="8" cy="4" rx="5" ry="2"></ellipse><path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"></path></svg>Databases</a>
+    <a href="#"><svg width="17" height="17" sc-camel-view-box="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M8 1.5l5 2.5v4c0 3.2-2.4 5.3-5 6.5-2.6-1.2-5-3.3-5-6.5V4z"></path></svg>Policies</a>
+    <a href="#"><svg width="17" height="17" sc-camel-view-box="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M4 1.5h8v13H4zM6.5 5h3M6.5 8h3M6.5 11h2"></path></svg>Audit Log</a>
+    <a href="#"><svg width="17" height="17" sc-camel-view-box="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M6 1.5v4M10 1.5v4M4 5.5h8v3a4 4 0 01-8 0zM8 12.5v2"></path></svg>Integrations</a>
+    <a href="#"><svg width="17" height="17" sc-camel-view-box="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><circle cx="8" cy="8" r="2.2"></circle><path d="M8 1.5v2M8 12.5v2M1.5 8h2M12.5 8h2M3.4 3.4l1.4 1.4M11.2 11.2l1.4 1.4M3.4 12.6l1.4-1.4M11.2 4.8l1.4-1.4"></path></svg>Settings</a>
+    <div class="col" style="margin-top:auto;gap:4px;padding:12px 10px;border-top:1px solid var(--line)"><span style="font:600 13px/1.2 'Manrope',sans-serif">Maya Chen</span><span class="eyebrow">engineer</span></div>
+  </aside>
+
+  <div class="col above" style="min-width:0">
+    <div class="top">
+      <div class="crumb">Rehearsals / 003_add_unique_email / <b>AI fix · draft V2</b></div>
+      <span class="st st-ai" style="margin-left:auto">◇ AI draft · not rehearsed</span>
+      <div class="avatar" aria-label="Maya Chen">MC</div>
+    </div>
+
+    <div class="col" style="padding:34px 48px 30px;gap:24px;flex-grow:1;min-height:0">
+      <div class="col" style="gap:10px"><span class="eyebrow" style="color:#6A4FB8">◇ AI fix · grounded in ai_dup_email, ai_orders_ref, lock_sim</span><span class="h1">Fix the data first. Then ask for the constraint.</span></div>
+
+      <div style="display:grid;grid-template-columns:minmax(0,.8fr) 300px minmax(0,1.3fr);gap:22px;flex-grow:1;min-height:0">
+        <div class="col" style="gap:10px">
+          <div class="row" style="justify-content:space-between"><span class="eyebrow">Original · V1</span><span class="st st-block">✕ 88</span></div>
+          <div class="code"><div class="ln">1
+2
+3</div><div class="src"><span class="dl-del"><span class="k">ALTER TABLE</span> users</span><span class="dl-del">  <span class="k">ADD CONSTRAINT</span> unique_email</span><span class="dl-del">  <span class="k">UNIQUE</span>(email);</span></div></div>
+          <div class="panel" style="padding:14px 16px;font:400 13px/1.55 'Manrope',sans-serif;color:var(--text2)">Fails with <span class="mono" style="color:var(--text)">ERROR 23505</span> on the first duplicate and holds an ACCESS EXCLUSIVE lock while it tries.</div>
+        </div>
+
+        <div class="glass col" style="padding:22px;gap:14px;background:rgba(238,231,255,.6);border-color:rgba(119,88,200,.25)">
+          <span class="eyebrow" style="color:#6A4FB8">Why this changed</span>
+          <span class="serif" style="font-size:25px;line-height:1.2">38 existing duplicate email groups prevent the proposed constraint.</span>
+          <div class="row" style="gap:6px;flex-wrap:wrap"><a href="#" class="cite">ai_dup_email · 38</a><a href="#" class="cite">ai_orders_ref · 41</a><a href="#" class="cite">lock_sim · 0.6s</a></div>
+          <div class="rule"></div>
+          <span class="eyebrow">Expected risk</span>
+          <div class="row" style="align-items:flex-end;gap:12px"><span class="serif" style="font-size:44px;line-height:.9;color:#A8234F">88</span><svg width="50" height="16" sc-camel-view-box="0 0 50 16" aria-hidden="true"><path class="draw" d="M0 8 H44 M38 2 L46 8 L38 14" fill="none" stroke="#7758C8" stroke-width="1.5"></path></svg><span class="serif tab" style="font-size:72px;line-height:.8;color:#47705A">{{risk}}</span></div>
+          <span style="font:400 12px/1.45 'Manrope',sans-serif;color:var(--text2)">A prediction. The real score comes only from rehearsing it.</span>
+          <div class="col" style="gap:8px;margin-top:auto">
+            <a href="#" class="btn btn-ai btn-lg">◇ Rehearse this fix</a>
+            <span class="mono" style="font-size:11px;text-align:center;color:var(--text2)">new sandbox · V2 · AI fixes are never applied directly</span>
+          </div>
+        </div>
+
+        <div class="col" style="gap:10px;min-width:0">
+          <div class="row" style="justify-content:space-between"><span class="eyebrow" style="color:#47705A">Safer version · V2</span><button type="button" class="btn btn-sm">Edit before rehearsing</button></div>
+          <div class="code"><div class="ln">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15</div><div class="src"><span class="dl-add"><span class="c">-- 1 · find duplicates, keep the oldest</span></span><span class="dl-add"><span class="k">CREATE TEMP TABLE</span> keep <span class="k">AS SELECT</span> id,</span><span class="dl-add">  first_value(id) <span class="k">OVER</span> (<span class="k">PARTITION BY</span> email</span><span class="dl-add">  <span class="k">ORDER BY</span> created_at) <span class="k">AS</span> keep_id <span class="k">FROM</span> users;</span><span class="dl-add"><span class="c">-- 2 · move orders, then remove duplicates</span></span><span class="dl-add"><span class="k">UPDATE</span> orders o <span class="k">SET</span> user_id = k.keep_id</span><span class="dl-add">  <span class="k">FROM</span> keep k <span class="k">WHERE</span> o.user_id = k.id;</span><span class="dl-add"><span class="k">DELETE FROM</span> users u <span class="k">USING</span> keep k</span><span class="dl-add">  <span class="k">WHERE</span> u.id = k.id <span class="k">AND</span> k.id &lt;&gt; k.keep_id;</span><span class="dl-add"><span class="c">-- 3 · build without blocking writes</span></span><span class="dl-add"><span class="k">CREATE UNIQUE INDEX CONCURRENTLY</span> users_email_key</span><span class="dl-add">  <span class="k">ON</span> users(email);</span><span class="c">-- 4 · attach as the constraint</span>
+<span class="k">ALTER TABLE</span> users <span class="k">ADD CONSTRAINT</span> unique_email
+  <span class="k">UNIQUE USING INDEX</span> users_email_key;</div></div>
+        </div>
+      </div>
+
+      <div class="panel" style="padding:8px 22px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));column-gap:26px">
+        <div class="ps"><b>1</b><span>Identify the 38 duplicate groups <a href="#" class="cite">rows</a></span></div>
+        <div class="ps"><b>2</b><span>Keep oldest account, re-point its orders <a href="#" class="cite">41</a></span></div>
+        <div class="ps"><b>3</b><span>Build the unique index concurrently</span></div>
+        <div class="ps"><b>4</b><span>Attach constraint · verify login &amp; checkout <span class="muted">(unverified)</span></span></div>
+      </div>
+    </div>
+  </div>
+  <sc-for list="{{sparks}}" as="s" hint-placeholder-count="0"><span class="spk" style="{{s.st}}">{{s.g}}</span></sc-for>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script="" data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:1080}}">
+class Component extends DCLogic {
+  trailInit() {
+    this.W = 1440; this.sp = []; this.sid = 0; this.fl = null;
+    this.reduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    const loop = () => {
+      const now = performance.now();
+      const busy = this.sp.length > 0 || this.dirty;
+      if (this.sp.length) this.sp = this.sp.filter((s) => now - s.t < 900);
+      if (busy) { this.dirty = false; this.forceUpdate(); }
+      this.trailRaf = requestAnimationFrame(loop);
+    };
+    this.trailRaf = requestAnimationFrame(loop);
+  }
+  trailMove(e) {
+    const r = e.currentTarget.getBoundingClientRect(); const k = r.width / this.W || 1;
+    const x = (e.clientX - r.left) / k, y = (e.clientY - r.top) / k; this.fl = { x, y }; this.dirty = true;
+    const now = performance.now();
+    if (!this.reduce && (!this.lastSp || now - this.lastSp > 32)) {
+      this.lastSp = now;
+      for (let i = 0; i < 2; i++) this.sp.push({ id: this.sid++, x: x + (Math.random() * 34 - 17), y: y + (Math.random() * 34 - 17), t: now, s: 9 + Math.random() * 13, c: Math.random() < 0.55 ? '#E8458F' : '#F49AC4', dy: 10 + Math.random() * 26, dx: Math.random() * 16 - 8, g: '✦' });
+      if (this.sp.length > 60) this.sp.splice(0, this.sp.length - 60);
+    }
+  }
+  trailVals() {
+    const now = performance.now();
+    return {
+      trailMove: (ev) => this.trailMove(ev),
+      trailLeave: () => { this.fl = null; this.dirty = true; },
+      flOn: !!this.fl, flX: this.fl ? this.fl.x : 0, flY: this.fl ? this.fl.y : 0,
+      sparks: (this.sp || []).map((p) => { const a = Math.min(1, (now - p.t) / 900); return { id: p.id, g: p.g, st: 'left:' + (p.x + p.dx * a).toFixed(1) + 'px;top:' + (p.y + p.dy * a).toFixed(1) + 'px;font-size:' + (p.s * (1 - a * 0.5)).toFixed(1) + 'px;color:' + p.c + ';opacity:' + (1 - a).toFixed(2) }; })
+    };
+  }
+  renderVals() { return Object.assign({}, this._rv(), this.trailVals()); }
+
+  componentDidMount() {
+    this.trailInit();
+    this.t0 = performance.now(); this.setState({ p: 0 });
+    const tick = () => { const p = Math.min(1, (performance.now() - this.t0) / 1600); this.setState({ p }); if (p < 1) this.raf = requestAnimationFrame(tick); };
+    this.raf = requestAnimationFrame(tick);
+  }
+  componentWillUnmount() { cancelAnimationFrame(this.trailRaf); cancelAnimationFrame(this.raf); }
+  _rv() {
+    const s = this.state || {};
+    const p = s.p === undefined ? 1 : s.p;
+    const e = 1 - Math.pow(1 - p, 3);
+    return { risk: String(Math.round(88 - 74 * e)).padStart(2, '0') };
+  }
+}
+</script>
+
+
+</body></html>

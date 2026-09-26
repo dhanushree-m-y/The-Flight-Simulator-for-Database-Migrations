@@ -1,0 +1,181 @@
+
+<div class="pm" style="width:1440px;height:1100px;padding:48px 56px;display:flex;flex-direction:column;gap:26px" sc-camel-on-mouse-move="{{trailMove}}" sc-camel-on-mouse-leave="{{trailLeave}}">
+  <div class="dots" aria-hidden="true"></div>
+  <div class="cols" aria-hidden="true"><i></i><i></i><i></i></div>
+
+  <div class="above row" style="justify-content:space-between;align-items:flex-end">
+    <div class="col" style="gap:12px"><span class="eyebrow">Bloom layer · 8 interaction ideas · hover anywhere on this board</span><span class="display" style="font-size:66px"><span class="gtext">Flowers for what went right.</span></span></div>
+    <span style="max-width:420px;text-align:right;font:400 14px/1.55 'Manrope',sans-serif;color:var(--text2)">Blooms and sparkles mark relief moments in the sandbox. Warnings, blocks and anything in production stay plain and serious.</span>
+  </div>
+
+  <div class="above" style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));gap:18px;flex-grow:1">
+    <!-- 1 cursor -->
+    <div class="glass tile">
+      <span class="n">01</span><span class="t">Star trail on hover</span>
+      <div class="stage"><span class="float" style="filter:drop-shadow(0 0 14px rgba(232,69,143,.55))"><svg width="70" height="70" sc-camel-view-box="-23 -23 46 46" aria-hidden="true"><g fill="#E8458F"><ellipse cx="0" cy="-10" rx="7.5" ry="10.5"></ellipse><ellipse cx="0" cy="-10" rx="7.5" ry="10.5" transform="rotate(72)"></ellipse><ellipse cx="0" cy="-10" rx="7.5" ry="10.5" transform="rotate(144)"></ellipse><ellipse cx="0" cy="-10" rx="7.5" ry="10.5" transform="rotate(216)"></ellipse><ellipse cx="0" cy="-10" rx="7.5" ry="10.5" transform="rotate(288)"></ellipse></g><circle r="6" fill="#F7A8CB"></circle><circle r="3" fill="#FFFFFF" opacity=".85"></circle></svg></span><span class="twinkle" style="position:absolute;left:30%;top:30%;color:#E8458F">✦</span><span class="twinkle" style="position:absolute;left:24%;top:48%;color:#F49AC4;animation-delay:.5s;font-size:10px">✦</span><span class="twinkle" style="position:absolute;left:36%;top:62%;color:#E8458F;animation-delay:1s;font-size:8px">•</span></div>
+      <span class="d">The pointer leaves a few fading ✦ stars. No custom cursor, so precision and accessibility stay intact. Off over production and dense tables.</span>
+      <span class="w">Landing · Overview · Live rehearsal</span>
+    </div>
+
+    <!-- 2 bloom status -->
+    <div class="glass tile">
+      <span class="n">02</span><span class="t">Bloom status · bud → open</span>
+      <div class="stage" style="gap:26px">
+        <div class="col" style="align-items:center;gap:10px"><svg width="48" height="48" sc-camel-view-box="-23 -23 46 46" aria-hidden="true"><path d="M0 14 V2" stroke="#47705A" stroke-width="1.6"></path><ellipse cx="0" cy="-6" rx="5" ry="10" fill="none" stroke="#A8234F" stroke-width="1.8"></ellipse><ellipse cx="-3" cy="-4" rx="3.5" ry="8" fill="#FBE3EC" stroke="#A8234F" stroke-width="1" transform="rotate(-18)"></ellipse></svg><span class="st st-block">✕ 88</span></div>
+        <div class="col" style="align-items:center;gap:10px"><svg width="48" height="48" sc-camel-view-box="-23 -23 46 46" aria-hidden="true"><g fill="#F7C59F" stroke="#C56F45" stroke-width=".8"><ellipse cx="0" cy="-10" rx="6" ry="10"></ellipse><ellipse cx="0" cy="-10" rx="6" ry="10" transform="rotate(-50)"></ellipse><ellipse cx="0" cy="-10" rx="6" ry="10" transform="rotate(50)"></ellipse></g><circle r="4" fill="#FFE4CC"></circle></svg><span class="st st-review">△ 42</span></div>
+        <div class="col" style="align-items:center;gap:10px"><svg width="48" height="48" sc-camel-view-box="-23 -23 46 46" aria-hidden="true"><g fill="#BFD9B5" stroke="#47705A" stroke-width=".8"><ellipse cx="0" cy="-10" rx="7.5" ry="10.5"></ellipse><ellipse cx="0" cy="-10" rx="7.5" ry="10.5" transform="rotate(72)"></ellipse><ellipse cx="0" cy="-10" rx="7.5" ry="10.5" transform="rotate(144)"></ellipse><ellipse cx="0" cy="-10" rx="7.5" ry="10.5" transform="rotate(216)"></ellipse><ellipse cx="0" cy="-10" rx="7.5" ry="10.5" transform="rotate(288)"></ellipse></g><circle r="5" fill="#FFFFFF"></circle></svg><span class="st st-safe">✓ 08</span></div>
+      </div>
+      <span class="d">A second, gentler status mark: closed bud, half open, full bloom. Always sits next to the word and number, never replaces them.</span>
+      <span class="w">Lineage · rehearsal lists</span>
+    </div>
+
+    <!-- 3 petal progress -->
+    <div class="glass tile">
+      <span class="n">03</span><span class="t">Petal progress · 10 steps</span>
+      <div class="stage">
+        <svg width="150" height="150" sc-camel-view-box="-36 -36 72 72" role="img" aria-label="{{petalLabel}}">
+          <sc-for list="{{petals}}" as="p" hint-placeholder-count="10"><g transform="{{p.rot}}"><ellipse cx="0" cy="-20" rx="5" ry="10" fill="{{p.fill}}" stroke="{{p.stroke}}" stroke-width=".8"></ellipse></g></sc-for>
+          <text x="0" y="4" text-anchor="middle" font-family="Instrument Serif" font-size="14" fill="#261F29">{{done}}/10</text>
+        </svg>
+      </div>
+      <span class="d">Each pipeline step is a petal. The current one glows lavender; the flower completes when the report is ready.</span>
+      <span class="w">Live rehearsal · tab title · favicon</span>
+    </div>
+
+    <!-- 4 burst -->
+    <div class="glass tile">
+      <span class="n">04</span><span class="t">Sparkle burst on proof</span>
+      <div class="stage">
+        <sc-if value="{{showBurst}}" hint-placeholder-val="{{ true }}">
+          <div class="burst" style="position:absolute;inset:0" aria-hidden="true">
+            <i style="--dx:-70px;--dy:-40px">✦</i><i style="--dx:60px;--dy:-52px;animation-delay:.08s;color:#F49AC4">✦</i><i style="--dx:84px;--dy:10px;animation-delay:.12s">•</i><i style="--dx:-86px;--dy:18px;animation-delay:.05s;color:#CBB8F6">✦</i><i style="--dx:-30px;--dy:58px;animation-delay:.15s">✦</i><i style="--dx:40px;--dy:54px;animation-delay:.1s;color:#BFD9B5">✦</i><i style="--dx:0px;--dy:-72px;animation-delay:.18s;color:#F7C59F">•</i><i style="--dx:96px;--dy:-24px;animation-delay:.2s;color:#CBB8F6">✦</i>
+          </div>
+        </sc-if>
+        <div class="col" style="align-items:center;gap:6px;padding:14px 20px;border-radius:14px;background:rgba(230,242,223,.8);border:1px solid rgba(71,112,90,.3)"><span class="serif" style="font-size:44px;line-height:.9;color:#47705A">100%</span><span class="eyebrow" style="color:#47705A">rollback identical</span></div>
+      </div>
+      <button type="button" class="btn btn-sm btn-spark" sc-camel-on-click="{{replayBurst}}" style="align-self:flex-start">↺ Replay</button>
+      <span class="w">Rollback proof · all checks passed</span>
+    </div>
+
+    <!-- 5 bloom on pass -->
+    <div class="glass tile">
+      <span class="n">05</span><span class="t">A flower opens when V3 passes</span>
+      <div class="stage">
+        <sc-if value="{{showBloom}}" hint-placeholder-val="{{ true }}">
+          <div class="col" style="align-items:center;gap:8px">
+            <svg width="110" height="110" sc-camel-view-box="-23 -23 46 46" aria-hidden="true" style="filter:drop-shadow(0 0 16px rgba(232,69,143,.45))">
+              <g><ellipse class="petal" cx="0" cy="-10" rx="7.5" ry="10.5" fill="#E8458F" style="animation-delay:.05s"></ellipse></g>
+              <g transform="rotate(72)"><ellipse class="petal" cx="0" cy="-10" rx="7.5" ry="10.5" fill="#EC5A95" style="animation-delay:.2s"></ellipse></g>
+              <g transform="rotate(144)"><ellipse class="petal" cx="0" cy="-10" rx="7.5" ry="10.5" fill="#E8458F" style="animation-delay:.35s"></ellipse></g>
+              <g transform="rotate(216)"><ellipse class="petal" cx="0" cy="-10" rx="7.5" ry="10.5" fill="#EC5A95" style="animation-delay:.5s"></ellipse></g>
+              <g transform="rotate(288)"><ellipse class="petal" cx="0" cy="-10" rx="7.5" ry="10.5" fill="#E8458F" style="animation-delay:.65s"></ellipse></g>
+              <circle r="6" fill="#F7A8CB"></circle><circle r="3" fill="#FFFFFF"></circle>
+            </svg>
+            <span class="row" style="gap:8px"><span class="serif" style="font-size:30px">88 → 08</span><span class="st st-safe">✓ safe</span></span>
+          </div>
+        </sc-if>
+      </div>
+      <button type="button" class="btn btn-sm btn-spark" sc-camel-on-click="{{replayBloom}}" style="align-self:flex-start">↺ Replay</button>
+      <span class="w">Lineage · new rehearsal finished</span>
+    </div>
+
+    <!-- 6 shimmer -->
+    <div class="glass tile">
+      <span class="n">06</span><span class="t">Shimmer on hover</span>
+      <div class="stage" style="flex-direction:column;gap:12px">
+        <button type="button" class="btn btn-lg btn-spark btn-bloom">Rehearse this fix</button>
+        <button type="button" class="btn btn-spark">Start a rehearsal</button>
+      </div>
+      <span class="d">A light band sweeps across sandbox actions on hover. Production buttons stay flat and dark — no shimmer.</span>
+      <span class="w">Sandbox CTAs only</span>
+    </div>
+
+    <!-- 7 twinkling chart -->
+    <div class="glass tile">
+      <span class="n">07</span><span class="t">Twinkling risk points</span>
+      <div class="stage">
+        <svg width="100%" height="140" sc-camel-view-box="0 0 280 140" aria-hidden="true">
+          <g stroke="rgba(119,88,200,.12)"><line x1="0" y1="30" x2="280" y2="30"></line><line x1="0" y1="80" x2="280" y2="80"></line><line x1="0" y1="130" x2="280" y2="130"></line></g>
+          <path class="draw" d="M0 120 C40 110 60 60 100 70 S160 20 190 36 S240 110 280 116" fill="none" stroke="url(#tg)" stroke-width="2"></path>
+          <defs><linearGradient id="tg" x1="0" x2="1"><stop offset="0" stop-color="#F49AC4"></stop><stop offset="1" stop-color="#F18A12"></stop></linearGradient></defs>
+          <text x="96" y="74" font-size="14" fill="#E8458F" class="twinkle">✦</text><text x="186" y="40" font-size="18" fill="#D94F87" class="twinkle" style="animation-delay:.6s">✦</text><text x="270" y="120" font-size="12" fill="#47705A" class="twinkle" style="animation-delay:1.2s">✦</text>
+          <text x="198" y="30" font-family="DM Mono" font-size="9" fill="#B8386E">003 · 88</text>
+        </svg>
+      </div>
+      <span class="d">Notable data points glint once when the chart draws, then settle. Hover one to read its evidence.</span>
+      <span class="w">Overview risk landscape</span>
+    </div>
+
+    <!-- 8 sunset band -->
+    <div class="tile bloom" style="border-radius:18px">
+      <div class="dots" aria-hidden="true"></div><div class="cols" aria-hidden="true"><i></i><i></i><i></i></div>
+      <span class="n" style="color:#FFFFFF;position:relative">08</span><span class="t" style="position:relative">Sunset hero band</span>
+      <div class="stage" style="flex-direction:column;align-items:flex-start;gap:10px;position:relative"><span class="b-rule" style="width:60px"></span><span class="serif" style="font-size:40px;line-height:1">Let’s find out<br>what breaks.</span></div>
+      <span class="d" style="color:#FFF7F2;position:relative">Pink-to-amber gradient, drifting dots and dashed column guides — only behind big headlines, never behind data.</span>
+      <span class="w" style="color:#FFFFFF;position:relative">Landing · page heroes</span>
+    </div>
+  </div>
+
+  <div class="above glass row" style="gap:26px;padding:16px 22px">
+    <span class="eyebrow" style="color:var(--text)">Rules</span>
+    <span style="font:500 13px/1.4 'Manrope',sans-serif">✓ Sandbox success, empty states, landing</span>
+    <span style="font:500 13px/1.4 'Manrope',sans-serif">✕ Never on production, blocked verdicts, logs or SQL</span>
+    <span style="font:500 13px/1.4 'Manrope',sans-serif">◌ Reduced motion: no trail, no burst, static bloom</span>
+    <span style="font:500 13px/1.4 'Manrope',sans-serif;margin-left:auto">Settings → Appearance → “Bloom effects” on / off</span>
+  </div>
+
+  <sc-for list="{{sparks}}" as="s" hint-placeholder-count="0"><span class="spk" style="{{s.st}}">{{s.g}}</span></sc-for>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script="" data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:1100}}">
+class Component extends DCLogic {
+  componentDidMount() {
+    this.W = 1440; this.sp = []; this.sid = 0; this.fl = null; this.t0 = performance.now(); this.lastStep = -1;
+    this.reduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    this.setState({ showBurst: true, showBloom: true });
+    const loop = () => {
+      const now = performance.now();
+      const step = Math.floor(((now - this.t0) / 700) % 13);
+      const busy = this.sp.length > 0 || this.dirty || step !== this.lastStep;
+      if (this.sp.length) this.sp = this.sp.filter((s) => now - s.t < 900);
+      if (busy) { this.dirty = false; this.lastStep = step; this.forceUpdate(); }
+      this.raf = requestAnimationFrame(loop);
+    };
+    this.raf = requestAnimationFrame(loop);
+  }
+  componentWillUnmount() { cancelAnimationFrame(this.raf); clearTimeout(this.to1); clearTimeout(this.to2); }
+  trailMove(e) {
+    const r = e.currentTarget.getBoundingClientRect(); const k = r.width / this.W || 1;
+    const x = (e.clientX - r.left) / k, y = (e.clientY - r.top) / k; this.fl = { x, y }; this.dirty = true;
+    const now = performance.now();
+    if (!this.reduce && (!this.lastSp || now - this.lastSp > 32)) {
+      this.lastSp = now;
+      for (let i = 0; i < 2; i++) this.sp.push({ id: this.sid++, x: x + (Math.random() * 34 - 17), y: y + (Math.random() * 34 - 17), t: now, s: 9 + Math.random() * 13, c: Math.random() < 0.55 ? '#E8458F' : '#F49AC4', dy: 10 + Math.random() * 26, dx: Math.random() * 16 - 8, g: '✦' });
+      if (this.sp.length > 60) this.sp.splice(0, this.sp.length - 60);
+    }
+  }
+  renderVals() {
+    const now = performance.now();
+    const s = this.state || {};
+    const step = this.t0 ? Math.min(10, Math.floor(((now - this.t0) / 700) % 13)) : 7;
+    const petals = [];
+    for (let i = 0; i < 10; i++) {
+      const done = i < step, cur = i === step && step < 10;
+      petals.push({ rot: 'rotate(' + (i * 36) + ')', fill: done ? (i < 3 ? '#F4B8CC' : i < 7 ? '#F7C59F' : '#BFD9B5') : (cur ? '#CBB8F6' : '#FFFFFF'), stroke: done || cur ? 'rgba(76,54,78,.15)' : 'rgba(76,54,78,.22)' });
+    }
+    const replay = (key) => () => { this.setState({ [key]: false }); const t = setTimeout(() => this.setState({ [key]: true }), 40); if (key === 'showBurst') this.to1 = t; else this.to2 = t; };
+    return {
+      petals: petals, done: step, petalLabel: step + ' of 10 rehearsal steps complete',
+      showBurst: s.showBurst !== false, showBloom: s.showBloom !== false,
+      replayBurst: replay('showBurst'), replayBloom: replay('showBloom'),
+      trailMove: (ev) => this.trailMove(ev),
+      trailLeave: () => { this.fl = null; this.dirty = true; },
+      flOn: !!this.fl, flX: this.fl ? this.fl.x : 0, flY: this.fl ? this.fl.y : 0,
+      sparks: (this.sp || []).map((p) => { const a = Math.min(1, (now - p.t) / 900); return { id: p.id, g: p.g, st: 'left:' + (p.x + p.dx * a).toFixed(1) + 'px;top:' + (p.y + p.dy * a).toFixed(1) + 'px;font-size:' + (p.s * (1 - a * 0.5)).toFixed(1) + 'px;color:' + p.c + ';opacity:' + (1 - a).toFixed(2) }; })
+    };
+  }
+}
+</script>
+
+
+</body></html>

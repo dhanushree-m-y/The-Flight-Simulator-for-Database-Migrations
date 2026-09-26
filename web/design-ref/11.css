@@ -1,0 +1,5 @@
+
+body{margin:0;background:#FFF8FB}
+.vc{position:absolute;width:210px;padding:16px 18px;display:flex;flex-direction:column;gap:6px}
+.dl{display:grid;grid-template-columns:150px minmax(0,1fr) 54px 54px;gap:12px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line);font:500 13px/1.2 'Manrope',sans-serif}
+.dl code{font:400 12px/1 'DM Mono',monospace;text-align:right}

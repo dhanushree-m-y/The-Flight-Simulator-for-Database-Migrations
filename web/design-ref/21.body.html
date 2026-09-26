@@ -1,0 +1,106 @@
+
+<div class="pm grid-bg" style="width:1440px;height:1000px;padding:44px 56px;display:flex;flex-direction:column;gap:24px" sc-camel-on-mouse-move="{{trailMove}}" sc-camel-on-mouse-leave="{{trailLeave}}">
+  <div class="atmo" aria-hidden="true"><div class="l1"></div><div class="l2"></div><div class="l3"></div></div>
+  <div class="above col" style="gap:10px"><span class="eyebrow">States · each one says what is happening, what DryRun knows, and whether production was touched</span><span class="h1">Nothing ever just says “something went wrong”.</span></div>
+
+  <div class="above" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));gap:22px;flex-grow:1">
+    <div class="glass sb">
+      <span class="eyebrow">Empty · first visit</span>
+      <span class="serif" style="font-size:40px;line-height:1.05">No rehearsals yet.</span>
+      <span style="font:400 16px/1.5 'Manrope',sans-serif;color:var(--text2);max-width:500px">Test your first migration against production-like data without touching production.</span>
+      <ol class="row" style="gap:12px;list-style:none;margin:4px 0;padding:0">
+        <li class="panel col" style="flex:1;padding:12px 14px;gap:4px"><span class="serif" style="font-size:22px;color:#B8386E">01</span><span style="font:600 13px/1.3 'Manrope',sans-serif">Copy into a sandbox</span></li>
+        <li class="panel col" style="flex:1;padding:12px 14px;gap:4px"><span class="serif" style="font-size:22px;color:#6A4FB8">02</span><span style="font:600 13px/1.3 'Manrope',sans-serif">Run your migration there</span></li>
+        <li class="panel col" style="flex:1;padding:12px 14px;gap:4px"><span class="serif" style="font-size:22px;color:#47705A">03</span><span style="font:600 13px/1.3 'Manrope',sans-serif">Get evidence, not opinions</span></li>
+      </ol>
+      <div class="row" style="gap:10px;margin-top:auto"><a href="#" class="btn btn-p">Start first rehearsal</a><a href="#" class="btn">Connect GitHub</a></div>
+    </div>
+
+    <div class="glass sb">
+      <span class="eyebrow">Loading · real work, named</span>
+      <span class="serif" style="font-size:34px;line-height:1.05">Comparing 105,291 rows…</span>
+      <div style="height:6px;border-radius:3px;background:#EEE7FF"><div class="grow-x" style="height:100%;width:62%;border-radius:3px;background:linear-gradient(90deg,#F4B8CC,#CBB8F6)"></div></div>
+      <div class="col">
+        <div class="ld"><span style="color:#47705A">✓</span><span>Snapshots hashed · 4 tables</span><code>1.1s</code></div>
+        <div class="ld"><span class="breathe" style="color:#7758C8">●</span><span>Comparing 105,291 rows…</span><code>62%</code></div>
+        <div class="ld" style="color:var(--text2)"><span>○</span><span>Scanning foreign-key relationships…</span><code>next</code></div>
+        <div class="ld" style="color:var(--text2);border:0"><span>○</span><span>Testing rollback · checking policies…</span><code>—</code></div>
+      </div>
+      <div class="col" style="gap:8px;margin-top:auto"><div class="shim" style="width:92%"></div><div class="shim" style="width:74%"></div></div>
+    </div>
+
+    <div class="glass sb" style="border-color:rgba(168,35,79,.3)">
+      <div class="row" style="justify-content:space-between"><span class="eyebrow" style="color:#A8234F">Error · specific and recoverable</span><span class="st st-block">✕ step 1 of 10</span></div>
+      <span class="serif" style="font-size:36px;line-height:1.05">Sandbox creation failed.</span>
+      <div class="col">
+        <div class="kv"><span>Reason</span><span>insufficient storage allocation</span></div>
+        <div class="kv"><span>Required · available</span><span>14.2 GB · <span style="color:#A8234F">10 GB</span></span></div>
+      </div>
+      <div class="row" style="gap:10px;padding:12px 14px;border-radius:12px;background:#E6F2DF"><span style="width:22px;height:22px;border-radius:50%;background:#47705A;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font:600 12px/1 'Manrope',sans-serif">✓</span><span style="font:600 14px/1.3 'Manrope',sans-serif;color:#2F4B3C">Production was not modified.</span><span class="mono" style="margin-left:auto;font-size:11px;color:#47705A">no connection opened</span></div>
+      <div class="row" style="gap:10px;margin-top:auto"><button type="button" class="btn btn-p">Increase sandbox storage</button><button type="button" class="btn">Retry</button><button type="button" class="btn">View logs</button></div>
+    </div>
+
+    <div class="glass sb">
+      <span class="eyebrow">Permission · visible limits, never hidden buttons</span>
+      <div class="panel col" style="padding:14px 16px;gap:10px">
+        <div class="row" style="gap:10px"><span class="st st-info">◇ viewer</span><span style="font:600 14px/1.3 'Manrope',sans-serif">Jordan opens the 003 V3 report</span></div>
+        <div class="row" style="gap:8px"><button type="button" class="btn btn-sm" disabled="">Re-run</button><button type="button" class="btn btn-sm" disabled="">Approve</button></div>
+        <span style="font:400 12.5px/1.5 'Manrope',sans-serif;color:var(--text2)"><svg width="12" height="12" sc-camel-view-box="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true" style="vertical-align:-1px"><rect x="2" y="5.5" width="8" height="5.5"></rect><path d="M4 5.5V4a2 2 0 014 0v1.5"></path></svg> Viewers inspect everything. Ask an engineer to re-run, or Alex or Sam to approve.</span>
+      </div>
+      <div class="panel col" style="padding:14px 16px;gap:10px;background:#FFF4EA;border-color:rgba(197,111,69,.3)">
+        <div class="row" style="gap:10px"><span class="st" style="background:#2A1620;color:#FFE9F1;border-radius:2px">⛨ approver</span><span style="font:600 14px/1.3 'Manrope',sans-serif">Sam opens a change Sam requested</span></div>
+        <span style="font:500 12.5px/1.5 'Manrope',sans-serif;color:#A3552F">△ Policy SOD-1: a different approver is required. Alex Rivera has been notified.</span>
+      </div>
+      <div class="panel col" style="padding:14px 16px;gap:6px;background:#FAF4FF;border-color:rgba(119,88,200,.25)">
+        <span style="font:600 14px/1.3 'Manrope',sans-serif">◇ AI fixes</span>
+        <span style="font:400 12.5px/1.5 'Manrope',sans-serif;color:var(--text2)">No role can apply an AI fix to production. The only action is “Rehearse this fix”.</span>
+      </div>
+    </div>
+  </div>
+  <sc-for list="{{sparks}}" as="s" hint-placeholder-count="0"><span class="spk" style="{{s.st}}">{{s.g}}</span></sc-for>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script="" data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:1000}}">
+class Component extends DCLogic {
+  componentWillUnmount() { cancelAnimationFrame(this.trailRaf); }
+  componentDidMount() { this.trailInit(); }
+  trailInit() {
+    this.W = 1440; this.sp = []; this.sid = 0; this.fl = null;
+    this.reduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    const loop = () => {
+      const now = performance.now();
+      const busy = this.sp.length > 0 || this.dirty;
+      if (this.sp.length) this.sp = this.sp.filter((s) => now - s.t < 900);
+      if (busy) { this.dirty = false; this.forceUpdate(); }
+      this.trailRaf = requestAnimationFrame(loop);
+    };
+    this.trailRaf = requestAnimationFrame(loop);
+  }
+  trailMove(e) {
+    const r = e.currentTarget.getBoundingClientRect(); const k = r.width / this.W || 1;
+    const x = (e.clientX - r.left) / k, y = (e.clientY - r.top) / k; this.fl = { x, y }; this.dirty = true;
+    const now = performance.now();
+    if (!this.reduce && (!this.lastSp || now - this.lastSp > 32)) {
+      this.lastSp = now;
+      for (let i = 0; i < 2; i++) this.sp.push({ id: this.sid++, x: x + (Math.random() * 34 - 17), y: y + (Math.random() * 34 - 17), t: now, s: 9 + Math.random() * 13, c: Math.random() < 0.55 ? '#E8458F' : '#F49AC4', dy: 10 + Math.random() * 26, dx: Math.random() * 16 - 8, g: '✦' });
+      if (this.sp.length > 60) this.sp.splice(0, this.sp.length - 60);
+    }
+  }
+  trailVals() {
+    const now = performance.now();
+    return {
+      trailMove: (ev) => this.trailMove(ev),
+      trailLeave: () => { this.fl = null; this.dirty = true; },
+      flOn: !!this.fl, flX: this.fl ? this.fl.x : 0, flY: this.fl ? this.fl.y : 0,
+      sparks: (this.sp || []).map((p) => { const a = Math.min(1, (now - p.t) / 900); return { id: p.id, g: p.g, st: 'left:' + (p.x + p.dx * a).toFixed(1) + 'px;top:' + (p.y + p.dy * a).toFixed(1) + 'px;font-size:' + (p.s * (1 - a * 0.5)).toFixed(1) + 'px;color:' + p.c + ';opacity:' + (1 - a).toFixed(2) }; })
+    };
+  }
+  renderVals() { return Object.assign({}, this._rv(), this.trailVals()); }
+
+  _rv() { return {}; }
+}
+</script>
+
+
+</body></html>

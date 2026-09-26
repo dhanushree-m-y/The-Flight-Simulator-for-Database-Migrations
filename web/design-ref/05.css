@@ -1,0 +1,11 @@
+
+body{margin:0;background:#FFF8FB}
+.stp{display:grid;grid-template-columns:40px minmax(0,1fr);gap:12px;padding:16px 0;border-bottom:1px solid var(--line)}
+.stp .n{font:400 30px/1 'Instrument Serif',serif;color:var(--text2)}
+.tg{width:38px;height:22px;border-radius:11px;background:#E6D9E5;position:relative;border:0;padding:0;flex-shrink:0}
+.tg::after{content:"";position:absolute;left:3px;top:3px;width:16px;height:16px;border-radius:50%;background:#FFFFFF;box-shadow:0 1px 2px rgba(0,0,0,.15)}
+.tg.on{background:#47705A}.tg.on::after{left:19px}
+.opt{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);font:500 13.5px/1.2 'Manrope',sans-serif}
+.opt span:last-child{margin-left:auto;font:400 11px/1 'DM Mono',monospace;color:var(--text2)}
+.tabb{height:36px;padding:0 14px;border-radius:9px;border:1px solid transparent;background:transparent;font:600 13px/1 'Manrope',sans-serif;color:var(--text2)}
+.tabb.on{background:#FFFFFF;border-color:rgba(76,54,78,.12);color:var(--text);box-shadow:0 1px 2px rgba(76,54,78,.08)}

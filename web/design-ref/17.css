@@ -1,0 +1,7 @@
+
+body{margin:0;background:#FFF8FB}
+.po{display:grid;grid-template-columns:minmax(0,1fr) 118px 110px;gap:14px;align-items:center;padding:13px 18px;border-bottom:1px solid var(--line)}
+.po.sel{background:#FAF4FF;box-shadow:inset 3px 0 0 #7758C8}
+.cond{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font:500 12px/1 'DM Mono',monospace}
+.cond span{padding:7px 9px;border-radius:8px;background:#FFFFFF;border:1px solid var(--line)}
+.cond .kw{background:transparent;border:0;color:#6A4FB8;padding:0 2px}

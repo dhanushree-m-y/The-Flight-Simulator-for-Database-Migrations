@@ -1,0 +1,8 @@
+
+body{margin:0;background:#FFF8FB}
+.petal{transform-box:fill-box;transform-origin:50% 100%}
+.stn{display:flex;flex-direction:column;align-items:center;gap:10px;flex:1 1 0;position:relative;z-index:1}
+.stn i{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:500 12px/1 'DM Mono',monospace;font-style:normal;border:2px solid #FFF8FB}
+.stn span{font:500 10.5px/1.2 'DM Mono',monospace;letter-spacing:.14em;text-transform:uppercase}
+.vr{display:grid;grid-template-columns:24px minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line);font:500 14px/1.2 'Manrope',sans-serif}
+.m{display:flex;flex-direction:column;gap:6px;padding:14px 16px;border-radius:14px;background:rgba(255,255,255,.7);border:1px solid rgba(71,112,90,.2)}

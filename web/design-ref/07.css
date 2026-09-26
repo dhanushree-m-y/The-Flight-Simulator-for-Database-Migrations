@@ -1,0 +1,15 @@
+
+body{margin:0;background:#FFF8FB}
+.hm{display:flex;flex-direction:column;gap:8px;padding:0 28px;border-left:1px solid var(--line)}
+.hm:first-child{border-left:0;padding-left:0}
+.fp{display:grid;grid-template-columns:170px minmax(0,1fr) 110px;gap:18px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.fp .lb{font:500 11px/1 'DM Mono',monospace;letter-spacing:.14em;text-transform:uppercase}
+.fp .tr2{height:14px;border-radius:7px;background:rgba(76,54,78,.06);position:relative;overflow:hidden}
+.fp .tr2 i{position:absolute;left:0;top:0;bottom:0;border-radius:7px}
+.fp .lv{font:500 11px/1 'DM Mono',monospace;letter-spacing:.12em;text-align:right}
+.why{display:grid;grid-template-columns:48px minmax(0,1fr) 140px;gap:14px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line);font:500 13.5px/1.3 'Manrope',sans-serif}
+.why b{font:400 26px/1 'Instrument Serif',serif}
+.dg{display:grid;grid-template-columns:minmax(0,1.4fr) 70px minmax(0,1fr);gap:12px;padding:11px 18px;border-bottom:1px solid var(--line);font:400 12.5px/1.3 'DM Mono',monospace;align-items:center}
+.verdict{position:sticky;top:0;z-index:3;display:flex;align-items:center;gap:14px;height:56px;padding:0 32px;background:rgba(255,255,255,.72);backdrop-filter:blur(20px) saturate(150%);-webkit-backdrop-filter:blur(20px) saturate(150%);border-bottom:1px solid rgba(140,60,90,.14);box-shadow:0 12px 28px -22px rgba(140,40,90,.45)}
+.verdict .vsep{width:1px;height:20px;background:rgba(140,60,90,.18)}
+.star{color:#E8458F;font-size:.72em;margin-right:6px;display:inline-block;vertical-align:.12em}

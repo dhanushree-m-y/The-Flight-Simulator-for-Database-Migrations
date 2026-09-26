@@ -1,0 +1,19 @@
+# dependencies / builds
+node_modules/
+.next/
+out/
+__pycache__/
+*.pyc
+.venv/
+*.egg-info/
+
+# secrets — never commit real credentials
+.env
+.env.*
+!.env.example
+
+# local artefacts
+backups/
+*.dump
+.DS_Store
+frontend-design.html

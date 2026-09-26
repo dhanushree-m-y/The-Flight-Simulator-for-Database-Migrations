@@ -1,0 +1,119 @@
+
+<div class="pm app" style="width:1440px;height:1000px" sc-camel-on-mouse-move="{{trailMove}}" sc-camel-on-mouse-leave="{{trailLeave}}">
+  <div class="atmo" aria-hidden="true"><div class="l1"></div><div class="l2"></div></div>
+  <aside class="side" aria-label="Primary">
+    <div class="brand"><svg width="26" height="26" sc-camel-view-box="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="11" fill="none" stroke="#D94F87" stroke-width="1.4"></circle><circle cx="13" cy="13" r="6" fill="none" stroke="#7758C8" stroke-width="1.4" stroke-dasharray="2 2.5"></circle><circle cx="13" cy="13" r="2" fill="#261F29"></circle></svg>DryRun</div>
+    <a href="#"><svg width="17" height="17" sc-camel-view-box="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><rect x="2" y="2" width="5" height="5" rx="1.2"></rect><rect x="9" y="2" width="5" height="5" rx="1.2"></rect><rect x="2" y="9" width="5" height="5" rx="1.2"></rect><rect x="9" y="9" width="5" height="5" rx="1.2"></rect></svg>Overview</a>
+    <a href="#" class="on"><svg width="17" height="17" sc-camel-view-box="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M1 8h3l2-5 3 10 2-5h4"></path></svg>Rehearsals</a>
+    <a href="#"><svg width="17" height="17" sc-camel-view-box="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M3 8.5l3 3 7-7"></path></svg>Approvals<span class="badge">2</span></a>
+    <a href="#"><svg width="17" height="17" sc-camel-view-box="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><ellipse cx="8" cy="4" rx="5" ry="2"></ellipse><path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"></path></svg>Databases</a>
+    <a href="#"><svg width="17" height="17" sc-camel-view-box="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M8 1.5l5 2.5v4c0 3.2-2.4 5.3-5 6.5-2.6-1.2-5-3.3-5-6.5V4z"></path></svg>Policies</a>
+    <a href="#"><svg width="17" height="17" sc-camel-view-box="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M4 1.5h8v13H4zM6.5 5h3M6.5 8h3M6.5 11h2"></path></svg>Audit Log</a>
+    <a href="#"><svg width="17" height="17" sc-camel-view-box="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M6 1.5v4M10 1.5v4M4 5.5h8v3a4 4 0 01-8 0zM8 12.5v2"></path></svg>Integrations</a>
+    <a href="#"><svg width="17" height="17" sc-camel-view-box="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><circle cx="8" cy="8" r="2.2"></circle><path d="M8 1.5v2M8 12.5v2M1.5 8h2M12.5 8h2M3.4 3.4l1.4 1.4M11.2 11.2l1.4 1.4M3.4 12.6l1.4-1.4M11.2 4.8l1.4-1.4"></path></svg>Settings</a>
+    <div class="col" style="margin-top:auto;gap:4px;padding:12px 10px;border-top:1px solid var(--line)"><span style="font:600 13px/1.2 'Manrope',sans-serif">Maya Chen</span><span class="eyebrow">engineer</span></div>
+  </aside>
+
+  <div class="col above" style="min-width:0">
+    <div class="top">
+      <div class="crumb">Rehearsals / 002_shrink_email / Report / <b>Broken rows</b></div>
+      <span class="env env-sb" style="margin-left:auto">SNAPSHOT DATA · sandbox_77C1</span>
+      <span class="st st-block">✕ blocked · 94</span>
+      <div class="avatar" aria-label="Maya Chen">MC</div>
+    </div>
+
+    <div class="col" style="padding:34px 48px 30px;gap:22px;flex-grow:1;min-height:0">
+      <div class="row" style="justify-content:space-between;align-items:flex-end">
+        <div class="col" style="gap:10px"><span class="eyebrow">Broken row explorer · users.email · VARCHAR(255) → VARCHAR(100)</span><span class="h1">412 values would not survive the new width.</span></div>
+        <div class="row" style="gap:8px"><button type="button" class="btn btn-sm">Copy row IDs</button><button type="button" class="btn btn-sm">Export 412 rows</button></div>
+      </div>
+
+      <div class="row" style="gap:10px">
+        <div class="search" style="width:320px">/ &nbsp;Search email, id, domain…</div>
+        <button type="button" class="fc on">Truncated · 412</button>
+        <button type="button" class="fc">Unchanged · 9,588</button>
+        <button type="button" class="fc">Length ↓</button>
+        <label class="row" style="gap:10px;margin-left:auto;font:600 13px/1 'Manrope',sans-serif"><button type="button" class="tg on" aria-label="Show only difference, on"></button>Show only difference <span class="kbd">D</span></label>
+      </div>
+
+      <div style="display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:22px;flex-grow:1;min-height:0">
+        <div class="panel col" style="overflow:hidden">
+          <div class="rr" style="font:500 10.5px/1 'DM Mono',monospace;letter-spacing:.14em;color:var(--text2);padding-top:15px;padding-bottom:15px"><span>ROW</span><span>BEFORE</span><span>AFTER</span><span>LEN</span><span>STATUS</span></div>
+          <div class="rr"><span class="muted">0412</span><span>dhanushree@example.com</span><span>dhanushree@example.com</span><span class="muted">22</span><span class="st st-safe" style="justify-self:start">✓ unchanged</span></div>
+          <div class="rr sel"><span>8815</span><span>…platform-engin<span style="color:#B8386E">eering+dryrun-mig…</span></span><span>…platform-engin<span class="cut">⟂</span></span><span>184</span><span class="st st-block" style="justify-self:start">✕ truncated</span></div>
+          <div class="rr"><span>6031</span><span>…global-subsidi<span style="color:#B8386E">ary-holdings-inte…</span></span><span>…global-subsidi<span class="cut">⟂</span></span><span>138</span><span class="st st-block" style="justify-self:start">✕ truncated</span></div>
+          <div class="rr"><span>1287</span><span>…logistics-compan<span style="color:#B8386E">y-example.com</span></span><span>…logistics-compan<span class="cut">⟂</span></span><span>113</span><span class="st st-block" style="justify-self:start">✕ truncated</span></div>
+          <div class="rr"><span>4410</span><span>…enterprise-procuremen<span style="color:#B8386E">t.example.org</span></span><span>…enterprise-procuremen<span class="cut">⟂</span></span><span>113</span><span class="st st-block" style="justify-self:start">✕ truncated</span></div>
+          <div class="rr"><span class="muted">0977</span><span>j.silva@example.com</span><span>j.silva@example.com</span><span class="muted">19</span><span class="st st-safe" style="justify-self:start">✓ unchanged</span></div>
+          <div class="rr" style="border:0;color:var(--text2)"><span></span><span>+ 408 more truncated</span><span class="row" style="gap:4px"><span class="kbd">J</span><span class="kbd">K</span> move</span><span></span><span></span></div>
+        </div>
+
+        <div class="glass col" style="padding:22px;gap:14px">
+          <div class="row" style="justify-content:space-between"><span class="eyebrow">Row 8815 · inspect</span><button type="button" class="btn btn-sm">Copy ID</button></div>
+          <span class="serif" style="font-size:52px;line-height:.9">184 <span style="font-size:22px;color:var(--text2)">chars</span></span>
+          <span class="eyebrow">longest value in users.email</span>
+          <div class="col" style="gap:6px;padding-top:6px">
+            <div style="position:relative;height:18px;border-radius:9px;background:#FFD7E5;overflow:hidden">
+              <div class="grow-x" style="position:absolute;left:0;top:0;bottom:0;width:54.3%;background:#CBB8F6"></div>
+            </div>
+            <div class="row mono" style="justify-content:space-between;font-size:10.5px;color:var(--text2)"><span>0</span><span style="color:#6A4FB8">kept · 100</span><span style="color:#B8386E">lost · 84</span><span>184</span></div>
+          </div>
+          <div class="col" style="gap:6px">
+            <span class="eyebrow">Before</span>
+            <span class="mono" style="font-size:12px;line-height:1.6;word-break:break-all;background:#FFFFFF;border-radius:10px;padding:10px 12px;border:1px solid var(--line)">jonathan.alexander.worthington-smyth.head-of-regional-partnerships.infrastructure-and-platform-engin<span class="cut">eering+dryrun-migration-test@corporate-mail.northwind-industrial-group.example.co.uk</span></span>
+            <span class="eyebrow">After</span>
+            <span class="mono" style="font-size:12px;line-height:1.6;word-break:break-all;background:#FFFFFF;border-radius:10px;padding:10px 12px;border:1px solid var(--line)">jonathan.alexander.worthington-smyth.head-of-regional-partnerships.infrastructure-and-platform-engin</span>
+          </div>
+          <div class="kv"><span>Orders by this user</span><span>7</span></div>
+          <div class="kv"><span>Rollback restores it</span><span style="color:#47705A">✓ yes</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <sc-for list="{{sparks}}" as="s" hint-placeholder-count="0"><span class="spk" style="{{s.st}}">{{s.g}}</span></sc-for>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script="" data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:1000}}">
+class Component extends DCLogic {
+  componentWillUnmount() { cancelAnimationFrame(this.trailRaf); }
+  componentDidMount() { this.trailInit(); }
+  trailInit() {
+    this.W = 1440; this.sp = []; this.sid = 0; this.fl = null;
+    this.reduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    const loop = () => {
+      const now = performance.now();
+      const busy = this.sp.length > 0 || this.dirty;
+      if (this.sp.length) this.sp = this.sp.filter((s) => now - s.t < 900);
+      if (busy) { this.dirty = false; this.forceUpdate(); }
+      this.trailRaf = requestAnimationFrame(loop);
+    };
+    this.trailRaf = requestAnimationFrame(loop);
+  }
+  trailMove(e) {
+    const r = e.currentTarget.getBoundingClientRect(); const k = r.width / this.W || 1;
+    const x = (e.clientX - r.left) / k, y = (e.clientY - r.top) / k; this.fl = { x, y }; this.dirty = true;
+    const now = performance.now();
+    if (!this.reduce && (!this.lastSp || now - this.lastSp > 32)) {
+      this.lastSp = now;
+      for (let i = 0; i < 2; i++) this.sp.push({ id: this.sid++, x: x + (Math.random() * 34 - 17), y: y + (Math.random() * 34 - 17), t: now, s: 9 + Math.random() * 13, c: Math.random() < 0.55 ? '#E8458F' : '#F49AC4', dy: 10 + Math.random() * 26, dx: Math.random() * 16 - 8, g: '✦' });
+      if (this.sp.length > 60) this.sp.splice(0, this.sp.length - 60);
+    }
+  }
+  trailVals() {
+    const now = performance.now();
+    return {
+      trailMove: (ev) => this.trailMove(ev),
+      trailLeave: () => { this.fl = null; this.dirty = true; },
+      flOn: !!this.fl, flX: this.fl ? this.fl.x : 0, flY: this.fl ? this.fl.y : 0,
+      sparks: (this.sp || []).map((p) => { const a = Math.min(1, (now - p.t) / 900); return { id: p.id, g: p.g, st: 'left:' + (p.x + p.dx * a).toFixed(1) + 'px;top:' + (p.y + p.dy * a).toFixed(1) + 'px;font-size:' + (p.s * (1 - a * 0.5)).toFixed(1) + 'px;color:' + p.c + ';opacity:' + (1 - a).toFixed(2) }; })
+    };
+  }
+  renderVals() { return Object.assign({}, this._rv(), this.trailVals()); }
+
+  _rv() { return {}; }
+}
+</script>
+
+
+</body></html>

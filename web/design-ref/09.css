@@ -1,0 +1,6 @@
+
+body{margin:0;background:#FFF8FB}
+.nd{position:absolute;width:168px;padding:14px 16px;border-radius:16px;display:flex;flex-direction:column;gap:6px;text-align:left;font:inherit;color:var(--text);cursor:pointer;transition:box-shadow .3s,transform .3s,opacity .3s}
+.nd b{font:500 16px/1 'DM Mono',monospace}
+.nd span{font:400 11px/1.2 'DM Mono',monospace;color:var(--text2)}
+.bl{display:grid;grid-template-columns:22px minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line);font:500 13.5px/1.3 'Manrope',sans-serif}

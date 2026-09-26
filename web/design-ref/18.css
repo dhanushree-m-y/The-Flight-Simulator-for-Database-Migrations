@@ -1,0 +1,4 @@
+
+body{margin:0;background:#FFF8FB}
+.ig{padding:24px;display:flex;flex-direction:column;gap:14px;min-height:0}
+.pv{border-radius:12px;background:#FFFFFF;border:1px solid rgba(38,31,41,.14);font:400 13.5px/1.45 system-ui,-apple-system,'Segoe UI',sans-serif;color:#1F2328}

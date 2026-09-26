@@ -1,0 +1,7 @@
+
+body{margin:0;background:#FFF8FB}
+.fam{display:flex;flex-direction:column;gap:10px;padding:18px;border-radius:18px}
+.sw{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:12px;align-items:center}
+.sw i{display:block;height:44px;border-radius:12px;border:1px solid var(--line)}
+.sw b{font:600 13px/1.2 'Manrope',sans-serif}
+.sw code{font:400 11.5px/1 'DM Mono',monospace;color:var(--text2)}
