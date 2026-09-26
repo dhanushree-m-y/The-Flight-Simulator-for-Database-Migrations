@@ -2,154 +2,235 @@
 
 > **Agents That Act · Migration Rehearsal Agent.** An AI agent running on **TrueFoundry TrueForge** that
 > restores a copy of your production Postgres into a sandbox, runs the schema change, compares every row, proves the
-> rollback, reports a risk verdict — and **stops for a human** before anything touches production.
+> rollback, reports a risk verdict with the exact broken rows — and **stops for a second human** before anything touches
+> production.
 
-Demo target: a real **hostel management system** (students, rooms, allocations, fees).
+![DryRun — overview](docs/images/overview.png)
+
+**🎬 Demo video (2:41):** _link in the submission form_ · **📄 Two-page write-up:** [SOLUTION.md](SOLUTION.md) ·
+**Demo system:** a real hostel management database (49 tables · 125,828 rows · 1,438 students)
 
 ---
 
-> 📄 Two-page write-up: [SOLUTION.md](SOLUTION.md)
-
 ## The problem
 
-Schema migrations are the scariest deploys a team ships. A single `ALTER TABLE` can fail halfway, silently cut or
-round data (`₹4,500.50 → ₹4,500`), orphan related rows, or hold a lock that freezes check-in for every student.
-Most teams find out in production.
+Schema migrations are the scariest changes a team ships. One `ALTER TABLE` can fail halfway through a deploy, silently
+cut or round data (`₹58,000.50 → ₹58,000`), orphan related rows, or hold a lock that freezes the app for every student.
+Most teams find out in production. **DryRun makes every migration a rehearsal first.**
 
-## What DryRun does, end to end
+| Migration on the hostel system | What DryRun found | Verdict |
+|---|---|---|
+| `UNIQUE ("Student"."phone")` | 12 students share 6 parent phone numbers — and they have payments and allocations, so deleting rows would corrupt records | 🔴 blocked |
+| `"guardianPhone" SET NOT NULL` | 8 new admissions have no guardian phone; the agent noticed they also have no room yet | 🔴 blocked |
+| `"Payment"."amount" → INTEGER` | 92 payments would silently lose their paise — and the rollback cannot bring them back | 🔴 blocked |
+| AI-drafted dedupe fix | nothing deleted, backup table, `CREATE UNIQUE INDEX CONCURRENTLY`, exact rollback | 🟠 human decides |
+| `ADD COLUMN "approvedNote"` | 49/49 tables unchanged, rollback 100% identical | 🟢 applied after approval |
 
-1. An engineer submits a migration (Monaco editor with live static analysis: lock levels, data-loss patterns).
-2. DryRun starts a **TrueForge session** with the `dryrun-rehearsal-agent`. The agent calls DryRun's MCP tools:
-   1. `get_rehearsal_brief` – migration, schema, static lock analysis, active policies
-   2. `create_sandbox` – `pg_dump` production → `pg_restore` into a throwaway `dryrun_sbx_*` database; snapshot every table
-   3. `apply_migration_in_sandbox` – runs the migration while a monitor samples `pg_locks`; on failure DryRun
-      automatically collects the exact offending rows (duplicates, NULLs, CHECK violations, truncation, orphans)
-   4. `compare_before_after` – row counts, per-column value fingerprints, row-level diffs, NULLs, broken foreign keys, schema diff
-   5. `run_sandbox_check` ×N – **the agent writes its own SQL checks** for this specific change; each must be a single
-      read-only `SELECT` (parsed with sqlglot) and runs in a `READ ONLY` transaction with a timeout, **only in the sandbox**
-   6. `test_rollback` – applies the down migration (the agent writes one if you didn't) and proves every table is
-      byte-identical to the snapshot via order-independent full-row checksums
-   7. `submit_report` – DryRun scores risk from the evidence (0–100) and evaluates policies; the agent writes the
-      plain-English verdict
-3. Blocked? **"Suggest a fix with AI"** – the agent investigates in the sandbox and calls `propose_fix`; a human
-   reviews the diff and rehearses it as V2 (lineage view shows 88 → 12).
-4. Passed? **Request approval.** The agent calls `apply_to_production`, which is **approval-gated in TrueForge**
-   (`require_approval_for_tools`) – the turn pauses. An approver (≠ requester) types the database name in DryRun;
-   DryRun answers TrueForge's paused call with `user.tool_approval: allow`. DryRun re-checks the approval
-   server-side, takes a `pg_dump` backup, applies with `lock_timeout` + advisory lock, re-runs the checks on
-   production, and keeps a restore button for 24 h.
-5. The report is delivered where the team works: in-app, **Download report** (Markdown), a **GitHub PR comment**
-   (`github_pr` on the rehearsal) and **Slack** — each optional via env vars.
-6. Every action lands in a **hash-chained audit log** (`sha256(prev_hash + event)`); `/api/audit/verify` detects tampering.
+---
 
-### Where it stops (human in the loop)
+## How it works
+
+```mermaid
+flowchart LR
+    A[Engineer submits<br/>migration] --> B[TrueForge agent<br/>dryrun-rehearsal-agent]
+    B -->|MCP tools| C[Clone production<br/>into sandbox]
+    C --> D[Snapshot every table]
+    D --> E[Apply migration<br/>+ measure locks]
+    E --> F[Compare before/after<br/>rows · values · FKs · schema]
+    F --> G[Sub-agents write<br/>read-only checks]
+    G --> H[Prove rollback<br/>checksums identical]
+    H --> I{Risk verdict}
+    I -->|blocked| J[AI drafts a safer fix<br/>→ rehearsed as V2]
+    I -->|safe| K[Request approval]
+    K --> L[[TrueForge pauses<br/>apply_to_production]]
+    L -->|second person types<br/>the database name| M[Backup → Apply → Verify]
+    M --> N[(Hash-chained<br/>audit log)]
+```
+
+### Where the agent stops (human in the loop)
 
 | Action | Gate |
 |---|---|
-| Any write to production (`apply_to_production`) | TrueForge tool approval **and** DryRun approval: approver role, two-person rule, typed confirmation, passing rehearsal, risk ≤ policy ceiling, SQL fingerprint unchanged since rehearsal |
-| Restore production from backup (`restore_production_backup`) | TrueForge tool approval + approver role |
+| Any write to production (`apply_to_production`) | **TrueForge tool approval** *and* DryRun approval: approver role, two-person rule, typed database name, passing verdict, risk ≤ policy ceiling, SQL unchanged since the rehearsal |
+| Restoring production from backup | TrueForge tool approval + approver role |
+| Unclear intent (e.g. "this clears 6 phone numbers — intended?") | Agent calls `ask_user_question`; the engineer answers on DryRun's live page |
 | AI-proposed fix | Never applied — shown as a diff; a human chooses to rehearse it |
-| AI-written SQL | Read-only, single statement, sandbox only |
+| AI-written SQL | Single read-only `SELECT` (validated with sqlglot), run in a `READ ONLY` transaction with a timeout, **in the sandbox only** |
 
 ---
 
 ## Architecture
 
-```
- Next.js web (3000) ──REST/SSE──► DryRun API · FastAPI (8000) ──► TrueForge harness (8790) ──► LLM provider
-                                   │    ▲  /mcp/ (MCP, header auth)        │  agent loop, tool approval,
-                                   │    └──────────────────────────────────┘  sessions, compaction
-                                   ▼
-                   PostgreSQL ── hostel (production, read-only except approved apply)
-                              ── dryrun_sbx_* (throwaway sandbox clones, TTL-reaped)
-                              ── dryrun_meta  (rehearsals, approvals, audit chain)
+```mermaid
+flowchart TB
+    subgraph Browser
+      W[DryRun web app<br/>Next.js 15 · React 19]
+    end
+    subgraph DryRun API
+      API[FastAPI<br/>REST + Server-Sent Events]
+      MCP[MCP server /mcp<br/>12 tools · header auth]
+      ENG[Rehearsal engine<br/>clone · snapshot · apply · diff · rollback · risk]
+      GUARD[SQL guard<br/>sqlglot read-only]
+      AUD[Audit chain<br/>SHA-256]
+    end
+    subgraph TrueForge
+      AG[dryrun-rehearsal-agent<br/>sessions · sub-agents · tool approval<br/>generative UI · schedules]
+    end
+    LLM[OpenAI gpt-5.5]
+    subgraph PostgreSQL
+      P[(hostel production)]
+      S[(dryrun_sbx_*<br/>throwaway sandboxes)]
+      M[(dryrun_meta)]
+    end
+    S3[(AWS S3<br/>backup copies)]
+
+    W <-->|REST / SSE| API
+    API -->|sessions & turns| AG
+    AG --> LLM
+    AG -->|tool calls| MCP
+    MCP --> ENG
+    ENG --> GUARD
+    ENG -->|pg_dump read-only| P
+    ENG -->|pg_restore · migrate · compare| S
+    API --> M
+    API --> AUD
+    ENG -.->|approved apply only| P
+    ENG -.->|optional| S3
 ```
 
-| Path | What |
-|---|---|
-| `api/dryrun/engine.py` | rehearsal steps: clone, snapshot, apply + lock monitor, evidence probes, compare, rollback proof, scoring |
-| `api/dryrun/mcp_tools.py` | the 12 MCP tools the TrueForge agent uses (2 destructive + gated) |
-| `api/dryrun/agent.py` | TrueForge integration: registers MCP server + agent spec, streams turns, bridges approvals |
-| `api/dryrun/sqlguard.py` | read-only guard for AI-written SQL |
-| `api/dryrun/production.py` | approval-gated backup → apply → verify → restore |
-| `api/dryrun/audit.py` | tamper-evident audit chain |
-| `web/src/app/**` | 20+ screens ported from our Claude Design file (live mission control, report, evidence, approvals…) |
-
-### How TrueForge is used (every harness capability)
+### How TrueForge is used — every harness capability
 
 | TrueForge capability | How DryRun uses it |
 |---|---|
-| **Agent runtime · sessions · streamed turns** | `dryrun-rehearsal-agent` (created via `POST /api/v1/agents`); every rehearsal is a session, streamed over SSE |
+| **Agent runtime · sessions · streamed turns** | `dryrun-rehearsal-agent` (created via `POST /api/v1/agents`); every rehearsal is a TrueForge session streamed over SSE |
 | **Model (any provider)** | the team's **OpenAI** model (`openai/gpt-5-5`) configured in TrueForge → Settings → Models |
 | **Tools via MCP** | DryRun's engine is a remote MCP server with 12 tools (`POST /api/v1/settings/mcp-servers`, header auth) |
 | **Tool approval — human in the loop** | `require_approval_for_tools: [apply_to_production, restore_production_backup]`; resumed with `user.tool_approval` after the DryRun approval |
 | **Sub-agents** | integrity investigator, hostel-rules investigator and rollback author run in parallel |
-| **Ask clarifying questions** | "This removes 38 rows — intended?" shown on DryRun's live page; the answer resumes the turn (`user.tool_response`) |
+| **Ask clarifying questions** | `ask_user_question` pauses the turn; the answer from DryRun resumes it (`user.tool_response`) |
 | **Generative UI** | the agent renders a verdict card inside the TrueForge chat |
-| **Sandbox + Code Mode** | Daytona sandbox auto-enabled when configured; the agent aggregates check results in Python there |
+| **Sandbox + Code Mode** | Daytona sandbox auto-enabled when a provider is configured |
 | **Context engineering** | compaction at 80k tokens, large tool responses offloaded, deferred tool loading (only the brief is preloaded) |
 | **Background execution · schedules** | `dryrun-nightly-drift-check` re-rehearses approved-but-unapplied migrations every night against fresh data |
 
 Every live rehearsal links to its TrueForge session ("Open in TrueForge ↗").
 
-**Other tech from the organisers:** OpenAI (team key, entered only in TrueForge) and **AWS S3** — every production
-backup gets an encrypted off-site copy when `AWS_S3_BUCKET` is set (credentials via `aws configure`).
+| TrueForge — the agent spec (model, MCP tools with approval gate) | TrueForge — a rehearsal session (19 tool calls, sub-agents) |
+|---|---|
+| ![TrueForge agent](docs/images/trueforge-agent.png) | ![TrueForge session](docs/images/trueforge-session.png) |
+
+---
+
+## Screenshots
+
+| New rehearsal (live static analysis) | Live rehearsal (mission control) |
+|---|---|
+| ![New rehearsal](docs/images/new-rehearsal.png) | ![Live rehearsal](docs/images/live-rehearsal.png) |
+
+| Report — blocked, with plain-English AI verdict | Broken rows — the exact students, PII masked |
+|---|---|
+| ![Blocked report](docs/images/report-blocked.png) | ![Broken rows](docs/images/broken-rows.png) |
+
+| AI fix — safer migration + exact rollback | Report — safe, rollback proven |
+|---|---|
+| ![AI fix](docs/images/ai-fix.png) | ![Safe report](docs/images/report-safe.png) |
+
+| Production apply — backup → apply → verify | Tamper-evident audit log |
+|---|---|
+| ![Production apply](docs/images/production-apply.png) | ![Audit log](docs/images/audit-log.png) |
+
+| TrueForge — the paused apply, released by a human | Integrations |
+|---|---|
+| ![TrueForge approval](docs/images/trueforge-approval.png) | ![Integrations](docs/images/integrations.png) |
+
+---
+
+## Tech stack
+
+| Layer | Technology |
+|---|---|
+| Agent harness | **TrueFoundry TrueForge** — agent spec, sessions, MCP connector, tool approval, sub-agents, generative UI, schedules |
+| LLM | **OpenAI gpt-5.5** (through TrueForge model providers) |
+| Tools protocol | **Model Context Protocol** — Python `mcp` 2.x `MCPServer`, streamable HTTP |
+| Backend | **Python 3.13**, FastAPI, sse-starlette, psycopg 3, sqlglot, httpx, pydantic-settings |
+| Database | **PostgreSQL 16** — `pg_dump`/`pg_restore` sandboxes, `pg_locks` monitoring, checksum diffs |
+| Frontend | **Next.js 15**, React 19, TypeScript, Monaco editor, cmdk, sonner — design system ported from our Claude Design file |
+| Cloud (optional) | **AWS S3** off-site backup copies (boto3) · GitHub PR comments · Slack webhooks |
+| Tests | pytest (SQL guard, statement splitting, lock levels, audit chain, risk scoring, PII masking) |
 
 ---
 
 ## Setup
 
-Prerequisites: Node ≥ 22.14, Python ≥ 3.11, PostgreSQL 15+ with `pg_dump`/`pg_restore`, an LLM API key.
+Prerequisites: Node ≥ 22.14, Python ≥ 3.11, PostgreSQL 15+ with `pg_dump`/`pg_restore`, an OpenAI (or other) API key.
 
 ```bash
-# 1. TrueForge (allow-lists localhost so it can reach DryRun's MCP server)
+# 1. TrueForge (allow-list lets it reach DryRun's MCP server on localhost)
 powershell -ExecutionPolicy Bypass -File scripts/start-trueforge.ps1
 #    macOS/Linux: OUTBOUND_URL_ALLOWED_HOSTS='["localhost","127.0.0.1"]' npx @truefoundry/trueforge@latest
 #    Open http://localhost:8790 → Settings → Models → add your provider key.
 
-# 2. API
-cp api/.env.example api/.env        # fill in DSNs, model name, MCP key
-cd api && python -m venv .venv && .venv/Scripts/pip install -r requirements.txt   # (bin/ on macOS/Linux)
+# 2. Demo database (optional — any Postgres works)
+python demo/hostel_os/generate.py                     # writes demo/hostel_os/hostel_os.sql
+createdb hostel_os && psql -d hostel_os -v ON_ERROR_STOP=1 -f demo/hostel_os/hostel_os.sql
+
+# 3. API
+cp api/.env.example api/.env                          # fill in DSNs, model name, MCP key
+cd api && python -m venv .venv && .venv/Scripts/pip install -r requirements.txt   # bin/ on macOS/Linux
 .venv/Scripts/python -m uvicorn dryrun.main:app --port 8000
 
-# 3. Web
-cd web && cp .env.example .env.local && npm install && npm run dev   # http://localhost:3000
+# 4. Web
+cd web && cp .env.example .env.local && npm install && npm run dev                 # http://localhost:3000
 ```
 
-On first boot the API creates `dryrun_meta`, seeds demo users/policies, registers your production connection and
-registers the MCP server + agent in TrueForge. Switch demo roles (engineer / approver / viewer / admin) from the
-avatar menu. Tests: `cd api && .venv/Scripts/python -m pytest`.
+On first boot the API creates `dryrun_meta`, seeds demo users and policies, registers your production connection, and
+registers the MCP server, the agent and the nightly schedule in TrueForge. Switch demo roles (engineer / approver /
+viewer / admin) from the avatar menu. Tests: `cd api && .venv/Scripts/python -m pytest`.
+
+### Repository layout
+
+| Path | What |
+|---|---|
+| `api/dryrun/engine.py` | rehearsal steps: clone, snapshot, apply + lock monitor, failure evidence, compare, rollback proof, scoring |
+| `api/dryrun/mcp_tools.py` | the 12 MCP tools the TrueForge agent uses (2 destructive + gated) |
+| `api/dryrun/agent.py` | TrueForge integration: agent spec, sessions, question + approval bridging, schedule |
+| `api/dryrun/sqlguard.py` | read-only guard for AI-written SQL |
+| `api/dryrun/production.py` | approval-gated backup → apply → verify → restore (+ S3 copy) |
+| `api/dryrun/audit.py` | tamper-evident audit chain |
+| `web/src/app/**` | 20+ screens — live mission control, report, evidence, AI fix, approvals, audit… |
+| `demo/` | hostel demo data (small seed + the full Hostel OS generator and Prisma migrations) |
+| `scripts/` | start scripts for TrueForge, API, web |
 
 ---
 
-## What is real vs. mocked
+## What is real vs. simplified
 
-**Real:** pg_dump/pg_restore sandbox clones; migrations executed in the sandbox; `pg_locks` measurement; failure
-evidence probes; row-level diffs and FK checks; rollback proof by checksums; TrueForge agent sessions, MCP tools
-and tool-approval pause/resume; AI-written checks and fixes; production backup/apply/verify/restore; hash-chained audit.
+**Real:** pg_dump/pg_restore sandbox clones; migrations executed in the sandbox; `pg_locks` timing; automatic failure
+evidence; row-level diffs and FK checks; rollback proof by full-row checksums; the TrueForge agent, MCP tools,
+sub-agents, questions and tool-approval pause/resume; AI-written checks and fixes; production backup/apply/verify/restore;
+hash-chained audit.
 
-**Simplified / mocked:** sign-in is a demo role switcher (header `X-DryRun-User`), not real auth; the sandbox is a
-separate database on the same Postgres server rather than a separate VM; the sandbox CPU sparkline is decorative;
-GitHub PR comments and Slack messages are implemented but only fire when `GITHUB_TOKEN`/`GITHUB_REPO` or `SLACK_WEBHOOK_URL` are set.
+**Simplified:** sign-in is a demo role switcher (`X-DryRun-User`), not real authentication; the sandbox is a separate
+database on the same Postgres server rather than a separate VM; the sandbox CPU sparkline is decorative; GitHub, Slack
+and S3 fire only when their env vars are set.
 
 ## Known limits
-
-- PostgreSQL only. Sandboxes clone the whole database with `pg_dump` — fine for the hostel DB, slow for very large
-  databases (sampling is limited to skipping snapshots above `SNAPSHOT_MAX_ROWS`).
-- Lock durations are measured on the sandbox's data volume; production may differ.
-- A TrueForge turn is capped at 10 minutes; if the agent stops early, DryRun completes the remaining deterministic
-  steps so a verdict always exists (`DRYRUN_AGENT_MODE=direct` runs without an LLM).
-- TrueForge blocks localhost MCP URLs unless allow-listed (`OUTBOUND_URL_ALLOWED_HOSTS`).
+- PostgreSQL only; whole-database `pg_dump` clones are slow for very large databases.
+- Lock times are measured on the sandbox's data volume.
+- A TrueForge turn is capped at 10 minutes; if the agent stops early DryRun finishes the deterministic steps so a verdict
+  always exists.
+- TrueForge blocks localhost MCP URLs unless allow-listed.
 
 ---
 
 ## AI assistants used
 
-- **Claude Code (Anthropic, Claude Opus 5.5)** — architecture, backend and frontend implementation, tests, under our direction and review.
-- **Claude Design** — the UI design system and screens ("Pastel Mission Control / Bloom").
+- **Claude Code (Anthropic, Claude Opus 5.5)** — architecture, backend and frontend implementation, tests and the demo
+  video production, under our direction and review.
+- **Claude Design** — the UI design system and screens.
 - **Claude** — problem framing and system design.
 
-Runtime (not a coding assistant): TrueFoundry **TrueForge** agent harness with the LLM configured in its model settings.
+Runtime (not a coding assistant): TrueFoundry **TrueForge** agent harness with an OpenAI model configured in its settings.
 
 ## License
 
