@@ -173,17 +173,6 @@ function Report({ r, id, dark, crumbs }: { r: Rehearsal; id: string; dark: boole
       setBusy(null);
     }
   };
-  const exportJson = () => {
-    const blob = new Blob([JSON.stringify(r, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${r.name}-v${r.version}-report.json`;
-    a.click();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
-    toast.success("Report exported");
-  };
-
   const primary = canFix ? (
     <button type="button" className="btn btn-sm btn-ai btn-spark" style={{ marginLeft: "auto" }} onClick={suggestFix} disabled={busy !== null}>
       {busy === "fix" ? "Starting…" : "◇ Suggest a fix with AI"}
@@ -220,9 +209,6 @@ function Report({ r, id, dark, crumbs }: { r: Rehearsal; id: string; dark: boole
             <a className="btn btn-sm" href={`${API_URL}/api/rehearsals/${r.id}/report.md`} download>
               Download report
             </a>
-            <button type="button" className="btn btn-sm" onClick={exportJson}>
-              JSON
-            </button>
           </>
         }
       />
@@ -247,7 +233,7 @@ function Report({ r, id, dark, crumbs }: { r: Rehearsal; id: string; dark: boole
           </span>
           <span className="vsep" />
           <span style={{ font: "500 13.5px/1 'Manrope',sans-serif", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 360 }}>
-            {top ? `${fmtInt(top.affected_rows)} · ${top.title}` : errored ? r.error ?? "no result" : `all ${r.checks.length} checks passed`}
+            {top ? (top.affected_rows > 0 ? `${fmtInt(top.affected_rows)} rows · ${top.title}` : top.title) : errored ? r.error ?? "no result" : `all ${r.checks.length} checks passed`}
           </span>
           <span className="vsep" />
           <span

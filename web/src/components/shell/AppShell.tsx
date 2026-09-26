@@ -105,7 +105,7 @@ export function TopBar({ crumbs, env = { kind: "org" }, right }: { crumbs: React
         ))}
       </div>
       <button type="button" className="search" style={{ marginLeft: "auto", cursor: "pointer" }} onClick={() => setPaletteOpen(true)}>
-        <IconSearch /> Search migrations, rows, hashes<span className="kbd" style={{ marginLeft: "auto" }}>⌘K</span>
+        <IconSearch /> <span className="search-label">Search…</span><span className="kbd" style={{ marginLeft: "auto" }}>⌘K</span>
       </button>
       {right}
       <div style={{ position: "relative" }}>

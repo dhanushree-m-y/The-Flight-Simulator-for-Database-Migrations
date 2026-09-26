@@ -76,3 +76,26 @@ select.inp { font-family: var(--f-ui); }
 /* Big numbers stay prominent but not overwhelming. */
 .num { font-size: 44px; }
 .pg-live .lm .num { font-size: 40px; }
+
+/* ---------------------------------------------------------------------------------------------
+   UI polish round 2 (user feedback): calmer labels, tidy top bar, smaller hero numbers.
+   --------------------------------------------------------------------------------------------- */
+/* Small labels: clean sans instead of spaced-out mono. */
+.eyebrow, .th, .node .nm, .fp .lb, .fp .lv, .lm .eyebrow { font-family: var(--f-ui) !important; font-weight: 600 !important; font-size: 11px !important; letter-spacing: 0.06em !important; }
+.st { font-family: var(--f-ui) !important; font-weight: 700 !important; font-size: 11px !important; letter-spacing: 0.04em !important; height: 26px; }
+.env { font-family: var(--f-ui) !important; font-weight: 600 !important; font-size: 12px !important; letter-spacing: 0.02em !important; }
+
+/* Top bar: one line, nothing wraps. */
+.top { gap: 10px; flex-wrap: nowrap; min-width: 0; }
+.top .crumb { flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.top .crumb span { white-space: nowrap; }
+.top .search { width: 170px; flex: 0 0 auto; white-space: nowrap; margin-left: 0 !important; }
+.top .btn, .top .env, .top .st { white-space: nowrap; flex: 0 0 auto; }
+.top .env { max-width: 260px; overflow: hidden; text-overflow: ellipsis; }
+@media (max-width: 1380px) { .top .search .search-label { display: none; } .top .search { width: auto; } }
+
+/* Report hero number: prominent, not overwhelming. */
+.pg-report .rp-risk { font-size: 84px !important; line-height: 0.9 !important; }
+.pg-report .rp-headline { font-size: 28px !important; line-height: 1.25 !important; }
+.top .crumb { min-width: 180px; }
+.top .env { max-width: 200px; }
