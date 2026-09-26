@@ -21,7 +21,7 @@ fingerprint), takes a backup, applies with lock timeouts, verifies production ma
 
 ## Architecture
 Next.js UI → FastAPI (REST/SSE) → **TrueForge** agent harness → LLM. DryRun's engine is a remote **MCP server**
-(10 tools). Engine: clone → snapshot → apply with `pg_locks` monitoring and automatic failure evidence → row-level
+(12 tools). Engine: clone → snapshot → apply with `pg_locks` monitoring and automatic failure evidence → row-level
 diff, FK integrity, schema diff → agent-written read-only checks → rollback proof by full-row checksums → risk score
 and policies. Every action is written to a SHA-256 hash-chained audit log.
 

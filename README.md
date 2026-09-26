@@ -68,7 +68,7 @@ Most teams find out in production.
 | Path | What |
 |---|---|
 | `api/dryrun/engine.py` | rehearsal steps: clone, snapshot, apply + lock monitor, evidence probes, compare, rollback proof, scoring |
-| `api/dryrun/mcp_tools.py` | the 10 MCP tools the TrueForge agent uses (2 destructive + gated) |
+| `api/dryrun/mcp_tools.py` | the 12 MCP tools the TrueForge agent uses (2 destructive + gated) |
 | `api/dryrun/agent.py` | TrueForge integration: registers MCP server + agent spec, streams turns, bridges approvals |
 | `api/dryrun/sqlguard.py` | read-only guard for AI-written SQL |
 | `api/dryrun/production.py` | approval-gated backup → apply → verify → restore |
