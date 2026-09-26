@@ -26,3 +26,6 @@ demo/hostel_os/hostel_os.sql
 
 # demo video workspace (recordings, renders)
 video/
+
+# local TrueForge standalone data
+.trueforge/

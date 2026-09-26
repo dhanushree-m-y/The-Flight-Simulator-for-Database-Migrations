@@ -1,18 +1,41 @@
-# DryRun — the flight simulator for database migrations
+<p align="center">
+  <img src="docs/images/cover.png" alt="DryRun — the flight simulator for database migrations" width="100%" />
+</p>
 
-> **Agents That Act · Migration Rehearsal Agent.** An AI agent running on **TrueFoundry TrueForge** that
-> restores a copy of your production Postgres into a sandbox, runs the schema change, compares every row, proves the
-> rollback, reports a risk verdict with the exact broken rows — and **stops for a second human** before anything touches
-> production.
+<p align="center">
+  <b>An AI agent on TrueForge that rehearses every database migration on a copy of production —<br/>
+  and stops for a second human before anything real changes.</b>
+</p>
 
-![DryRun — overview](docs/images/overview.png)
+<p align="center">
+  <img alt="TrueForge" src="https://img.shields.io/badge/Agent-TrueForge-7758C8?style=for-the-badge" />
+  <img alt="OpenAI" src="https://img.shields.io/badge/LLM-OpenAI%20gpt--5.5-261F29?style=for-the-badge&logo=openai" />
+  <img alt="MCP" src="https://img.shields.io/badge/Tools-MCP-D94F87?style=for-the-badge" />
+  <img alt="PostgreSQL" src="https://img.shields.io/badge/PostgreSQL-16-336791?style=for-the-badge&logo=postgresql&logoColor=white" />
+  <br/>
+  <img alt="FastAPI" src="https://img.shields.io/badge/FastAPI-Python%203.13-009688?style=flat-square&logo=fastapi&logoColor=white" />
+  <img alt="Next.js" src="https://img.shields.io/badge/Next.js-15-000000?style=flat-square&logo=nextdotjs" />
+  <img alt="Tests" src="https://img.shields.io/badge/tests-20%20passing-47705A?style=flat-square" />
+  <img alt="License" src="https://img.shields.io/badge/license-MIT-FF8E34?style=flat-square" />
+</p>
 
-**🎬 Demo video (2:41):** _link in the submission form_ · **📄 Two-page write-up:** [SOLUTION.md](SOLUTION.md) ·
-**Demo system:** a real hostel management database (49 tables · 125,828 rows · 1,438 students)
+<p align="center">
+  <a href="#-how-it-works">How it works</a> ·
+  <a href="#-how-trueforge-is-used">TrueForge</a> ·
+  <a href="#-screenshots">Screenshots</a> ·
+  <a href="#-tech-stack">Tech stack</a> ·
+  <a href="#-setup">Setup</a> ·
+  <a href="SOLUTION.md">Write-up</a>
+</p>
+
+<p align="center">
+  <img src="docs/images/demo.gif" alt="A live rehearsal: the agent clones production, applies the migration, compares every row" width="85%" />
+  <br/><sub>🎬 Full 2:41 demo video: link in the submission form · Demo system: a hostel management database — 49 tables, 125,828 rows, 1,438 students</sub>
+</p>
 
 ---
 
-## The problem
+## 🔥 The problem
 
 Schema migrations are the scariest changes a team ships. One `ALTER TABLE` can fail halfway through a deploy, silently
 cut or round data (`₹58,000.50 → ₹58,000`), orphan related rows, or hold a lock that freezes the app for every student.
@@ -28,7 +51,7 @@ Most teams find out in production. **DryRun makes every migration a rehearsal fi
 
 ---
 
-## How it works
+## 🔁 How it works
 
 ```mermaid
 flowchart LR
@@ -47,7 +70,7 @@ flowchart LR
     M --> N[(Hash-chained<br/>audit log)]
 ```
 
-### Where the agent stops (human in the loop)
+### ✋ Where the agent stops (human in the loop)
 
 | Action | Gate |
 |---|---|
@@ -59,7 +82,7 @@ flowchart LR
 
 ---
 
-## Architecture
+## 🏗️ Architecture
 
 ```mermaid
 flowchart TB
@@ -98,7 +121,7 @@ flowchart TB
     ENG -.->|optional| S3
 ```
 
-### How TrueForge is used — every harness capability
+## 🤖 How TrueForge is used
 
 | TrueForge capability | How DryRun uses it |
 |---|---|
@@ -121,7 +144,7 @@ Every live rehearsal links to its TrueForge session ("Open in TrueForge ↗").
 
 ---
 
-## Screenshots
+## 📸 Screenshots
 
 | New rehearsal (live static analysis) | Live rehearsal (mission control) |
 |---|---|
@@ -145,7 +168,7 @@ Every live rehearsal links to its TrueForge session ("Open in TrueForge ↗").
 
 ---
 
-## Tech stack
+## 🧰 Tech stack
 
 | Layer | Technology |
 |---|---|
@@ -160,7 +183,7 @@ Every live rehearsal links to its TrueForge session ("Open in TrueForge ↗").
 
 ---
 
-## Setup
+## 🚀 Setup
 
 Prerequisites: Node ≥ 22.14, Python ≥ 3.11, PostgreSQL 15+ with `pg_dump`/`pg_restore`, an OpenAI (or other) API key.
 
@@ -187,7 +210,7 @@ On first boot the API creates `dryrun_meta`, seeds demo users and policies, regi
 registers the MCP server, the agent and the nightly schedule in TrueForge. Switch demo roles (engineer / approver /
 viewer / admin) from the avatar menu. Tests: `cd api && .venv/Scripts/python -m pytest`.
 
-### Repository layout
+### 🗂️ Repository layout
 
 | Path | What |
 |---|---|
@@ -203,7 +226,7 @@ viewer / admin) from the avatar menu. Tests: `cd api && .venv/Scripts/python -m 
 
 ---
 
-## What is real vs. simplified
+## ✅ What is real vs. simplified
 
 **Real:** pg_dump/pg_restore sandbox clones; migrations executed in the sandbox; `pg_locks` timing; automatic failure
 evidence; row-level diffs and FK checks; rollback proof by full-row checksums; the TrueForge agent, MCP tools,
@@ -214,7 +237,7 @@ hash-chained audit.
 database on the same Postgres server rather than a separate VM; the sandbox CPU sparkline is decorative; GitHub, Slack
 and S3 fire only when their env vars are set.
 
-## Known limits
+## ⚠️ Known limits
 - PostgreSQL only; whole-database `pg_dump` clones are slow for very large databases.
 - Lock times are measured on the sandbox's data volume.
 - A TrueForge turn is capped at 10 minutes; if the agent stops early DryRun finishes the deterministic steps so a verdict
@@ -223,7 +246,7 @@ and S3 fire only when their env vars are set.
 
 ---
 
-## AI assistants used
+## 🧠 AI assistants used
 
 - **Claude Code (Anthropic, Claude Opus 5.5)** — architecture, backend and frontend implementation, tests and the demo
   video production, under our direction and review.
@@ -232,6 +255,6 @@ and S3 fire only when their env vars are set.
 
 Runtime (not a coding assistant): TrueFoundry **TrueForge** agent harness with an OpenAI model configured in its settings.
 
-## License
+## 📄 License
 
 MIT — see [LICENSE](LICENSE).
