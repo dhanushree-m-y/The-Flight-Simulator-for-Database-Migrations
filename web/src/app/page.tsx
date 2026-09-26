@@ -120,7 +120,7 @@ function Bento({ data }: { data: Overview }) {
         {/* metric tiles */}
         <div className="glass tile rise ov-m" style={{ gridColumn: "span 3", animationDelay: ".12s" }}>
           <span className="eyebrow">Rehearsals this week</span>
-          <span className="num tab" style={{ fontSize: 56 }}>{pad2(Math.round(kpis.rehearsals * p))}</span>
+          <span className="num tab" style={{ fontSize: 44 }}>{pad2(Math.round(kpis.rehearsals * p))}</span>
           <div className="row" style={{ gap: 10, marginTop: "auto" }}>
             <span className="mono" style={{ fontSize: 12, color: "var(--text2)" }}>
               <span style={{ color: "#3F7A3A" }}>{bands.safe} safe</span> · {bands.review} review · {bands.block} blocked
@@ -134,7 +134,7 @@ function Bento({ data }: { data: Overview }) {
         </div>
         <div className="glass tile rise ov-m" style={{ gridColumn: "span 3", animationDelay: ".16s" }}>
           <span className="eyebrow">Migrations blocked</span>
-          <span className="num tab" style={{ fontSize: 56, color: kpis.blocked > 0 ? "#A8234F" : undefined }}>
+          <span className="num tab" style={{ fontSize: 44, color: kpis.blocked > 0 ? "#A8234F" : undefined }}>
             {pad2(Math.round(kpis.blocked * p))}
           </span>
           <div className="row" style={{ gap: 8, marginTop: "auto", minWidth: 0 }}>
@@ -155,14 +155,14 @@ function Bento({ data }: { data: Overview }) {
         </div>
         <div className="glass tile rise ov-m" style={{ gridColumn: "span 3", animationDelay: ".2s" }}>
           <span className="eyebrow">Rows protected</span>
-          <span className="num tab" style={{ fontSize: 56 }}>{fmtInt(Math.round(kpis.rows_protected * p))}</span>
+          <span className="num tab" style={{ fontSize: 44 }}>{fmtInt(Math.round(kpis.rows_protected * p))}</span>
           <span className="muted" style={{ fontSize: 12.5, marginTop: "auto" }}>
             {issues.length ? `${issues.map((i) => `${i.kind.replace(/_/g, " ")} ${i.count}`).join(" · ")} caught` : "truncations · duplicates · orphans caught"}
           </span>
         </div>
         <div className="glass tile rise ov-m" style={{ gridColumn: "span 3", animationDelay: ".24s" }}>
           <span className="eyebrow">Avg rehearsal time</span>
-          <span className="num tab" style={{ fontSize: 56 }}>
+          <span className="num tab" style={{ fontSize: 44 }}>
             {((kpis.avg_duration_ms / 1000) * p).toFixed(1)}
             <span style={{ fontSize: 24, color: "var(--text2)" }}>s</span>
           </span>
@@ -211,7 +211,7 @@ function ApprovalTile({ pending }: { pending: Approval[] }) {
           <span className="eyebrow">production queue</span>
         </div>
         <div className="col" style={{ gap: 12, margin: "auto 0" }}>
-          <span className="serif" style={{ fontSize: 64, lineHeight: 0.95 }}>Nothing is waiting on you.</span>
+          <span className="serif" style={{ fontSize: 30, lineHeight: 1.2 }}>Nothing is waiting on you.</span>
           <span className="muted" style={{ fontSize: 14.5, maxWidth: 460 }}>
             When a rehearsal passes and someone requests a production apply, it lands here with its risk and evidence.
           </span>

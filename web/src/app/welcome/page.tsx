@@ -61,7 +61,7 @@ export default function WelcomePage() {
             <h1 id="wl-title" className="b-head wl-head" style={{ margin: 0 }}>
               Welcome to DryRun.
             </h1>
-            <span style={{ font: "400 italic 30px/1.25 'Instrument Serif',serif", maxWidth: 720, textShadow: "0 1px 12px rgba(120,20,60,.2)" }}>
+            <span style={{ font: "400 italic 30px/1.25 'Manrope',sans-serif", maxWidth: 720, textShadow: "0 1px 12px rgba(120,20,60,.2)" }}>
               Nothing touches production until it survives here.
             </span>
             <div className="row" style={{ gap: 12, paddingTop: 10, flexWrap: "wrap" }}>

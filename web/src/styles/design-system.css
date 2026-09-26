@@ -9,7 +9,7 @@
   --peach:#F7C59F;--orange-soft:#FFE4CC;--peach-deep:#C56F45;--peach-ink:#A3552F;
   --shadow:0 1px 0 rgba(255,255,255,.9) inset,0 10px 30px rgba(76,54,78,.08),0 1px 2px rgba(76,54,78,.06);
   --console:rgba(38,26,42,.92);--console-text:#EDE3EF;
-  --f-serif:'Instrument Serif','Iowan Old Style',Georgia,serif;--f-ui:'Manrope',system-ui,sans-serif;--f-mono:'DM Mono',ui-monospace,monospace;
+  --f-serif:'Manrope',system-ui,sans-serif;--f-ui:'Manrope',system-ui,sans-serif;--f-mono:'DM Mono',ui-monospace,monospace;
 }
 .dark{
   --bg:#1D1520;--bg2:#251A2A;--surface:#2A1F2F;--glass:rgba(52,36,58,.55);--glass-strong:rgba(58,40,64,.8);
@@ -203,7 +203,7 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:var(--f-ui)}
 .bloom-soft .cols i{border-left-color:rgba(217,79,135,.2)}
 .cols i:nth-child(1){left:25%}.cols i:nth-child(2){left:50%}.cols i:nth-child(3){left:75%}
 .b-rule{width:150px;height:3px;background:currentColor;border-radius:2px}
-.b-head{font:400 96px/1 'Instrument Serif',Georgia,serif;letter-spacing:-.02em;text-shadow:0 2px 24px rgba(120,20,60,.18)}
+.b-head{font:400 96px/1 'Manrope',system-ui,sans-serif;letter-spacing:-.02em;text-shadow:0 2px 24px rgba(120,20,60,.18)}
 .b-small{font:600 13px/1 'Manrope',sans-serif;letter-spacing:.01em;text-shadow:0 1px 8px rgba(120,20,60,.25)}
 .gtext{background:linear-gradient(95deg,#D0357F,#E8544E 55%,#E07A00);-webkit-background-clip:text;background-clip:text;color:transparent}
 /* flower */

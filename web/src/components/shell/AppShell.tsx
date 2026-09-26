@@ -204,7 +204,7 @@ function CommandPalette() {
     <div className="cmdk-overlay" onClick={() => setPaletteOpen(false)}>
       <div className="cmdk-box" onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-label="Command palette">
         <Command label="Command palette">
-          <Command.Input autoFocus placeholder="Type a command or search…" style={{ fontFamily: "'Instrument Serif',serif", fontSize: 22 }} />
+          <Command.Input autoFocus placeholder="Type a command or search…" style={{ fontFamily: "'Manrope',sans-serif", fontSize: 22 }} />
           <Command.List>
             <Command.Empty>No results.</Command.Empty>
             <Command.Group heading="Actions">

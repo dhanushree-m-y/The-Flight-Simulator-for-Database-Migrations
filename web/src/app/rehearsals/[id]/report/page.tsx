@@ -272,11 +272,11 @@ function Report({ r, id, dark, crumbs }: { r: Rehearsal; id: string; dark: boole
               {v.label}
             </span>
             <div className="row" style={{ alignItems: "flex-end", gap: 10 }} aria-label={`Risk ${r.risk ?? "unknown"} out of 100`}>
-              <span className="serif tab rp-risk" style={{ fontSize: 190, lineHeight: 0.78, color: onSunset(bandVar(r.risk)) }} aria-hidden="true">
+              <span className="serif tab rp-risk" style={{ fontSize: 120, lineHeight: 0.85, color: onSunset(bandVar(r.risk)) }} aria-hidden="true">
                 {r.risk == null ? "—" : pad2(Math.round(risk))}
               </span>
               <div className="col" style={{ gap: 6, paddingBottom: 10 }} aria-hidden="true">
-                <span className="serif" style={{ fontSize: 40, lineHeight: 1, color: "var(--text2)" }}>
+                <span className="serif" style={{ fontSize: 28, lineHeight: 1, color: "var(--text2)" }}>
                   /100
                 </span>
                 <span className="eyebrow">risk</span>
@@ -288,7 +288,7 @@ function Report({ r, id, dark, crumbs }: { r: Rehearsal; id: string; dark: boole
               Rehearsal report · V{r.version} · {fmtTime(r.created_at)} – {fmtTime(r.finished_at)} · {fmtDuration(r.duration_ms)}
               {sb ? ` · ${sb.id}` : ""}
             </span>
-            <h1 className="serif rp-headline" style={{ fontSize: 58, lineHeight: 1.04, letterSpacing: "-.015em", margin: 0 }}>
+            <h1 className="serif rp-headline" style={{ fontSize: 30, lineHeight: 1.25, letterSpacing: "-.015em", margin: 0 }}>
               {headline}
             </h1>
             {r.risk_parts.length > 0 && (
@@ -858,7 +858,7 @@ function RollbackCard({ r, id, dark, match }: { r: Rehearsal; id: string; dark: 
       {rb && rb.status !== "skipped" ? (
         <>
           <div className="row" style={{ alignItems: "flex-end", gap: 12, flexWrap: "wrap" }}>
-            <span className="serif" style={{ fontSize: 72, lineHeight: 0.85, color: tone }}>
+            <span className="serif" style={{ fontSize: 52, lineHeight: 0.9, color: tone }}>
               {match == null ? "—" : `${match}%`}
             </span>
             <span className="mono muted" style={{ fontSize: 12, paddingBottom: 8 }}>

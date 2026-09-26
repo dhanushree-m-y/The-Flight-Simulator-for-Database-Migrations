@@ -59,3 +59,20 @@ select.inp { font-family: var(--f-ui); }
 /* Active tab pills are white; keep their label ink-coloured on the sunset theme. */
 .pm:not(.calm):not(.dark) .tabb.on, .pm:not(.calm):not(.dark) [aria-current="page"].tabb { color: #261F29; }
 .dark .ev-nav a[aria-current="page"], .dark .tabb.on { background: var(--surface); color: var(--text); }
+
+/* ---------------------------------------------------------------------------------------------
+   Typography + motion refinements (user feedback): one clean sans family, calmer heading sizes,
+   no floating particles.
+   --------------------------------------------------------------------------------------------- */
+.display, .b-head { font-family: var(--f-ui) !important; font-weight: 700 !important; font-size: clamp(26px, 2.6vw, 36px) !important; line-height: 1.15 !important; letter-spacing: -0.025em !important; }
+.h1 { font-family: var(--f-ui) !important; font-weight: 700 !important; font-size: 26px !important; line-height: 1.2 !important; letter-spacing: -0.02em !important; }
+.h2 { font-family: var(--f-ui) !important; font-weight: 700 !important; font-size: 18px !important; line-height: 1.3 !important; letter-spacing: -0.01em !important; }
+.serif { font-family: var(--f-ui) !important; font-weight: 700; letter-spacing: -0.03em; }
+.num { font-weight: 600; }
+
+/* No floating white particles anywhere (sunset dots layers). */
+.dots, .dots2 { display: none !important; }
+.pm::before { display: none !important; }
+/* Big numbers stay prominent but not overwhelming. */
+.num { font-size: 44px; }
+.pg-live .lm .num { font-size: 40px; }

@@ -18,7 +18,7 @@
 /* 03 · ideas */
 .pg-ideas .petal{transform-box:fill-box;transform-origin:50% 100%}
 .pg-ideas .tile{padding:22px;display:flex;flex-direction:column;gap:12px;min-height:0;position:relative;overflow:hidden}
-.pg-ideas .tile .n{font:400 30px/1 'Instrument Serif',serif;color:#D94F87}
+.pg-ideas .tile .n{font:400 30px/1 'Manrope',sans-serif;color:#D94F87}
 .pg-ideas .tile .t{font:600 16px/1.3 'Manrope',sans-serif}
 .pg-ideas .tile .d{font:400 13px/1.5 'Manrope',sans-serif;color:var(--text2)}
 .pg-ideas .tile .w{font:500 10.5px/1.4 'DM Mono',monospace;letter-spacing:.1em;color:#6A4FB8;text-transform:uppercase;margin-top:auto}
@@ -33,7 +33,7 @@
 .pg-overview .ev .pin{width:14px;height:14px;border-radius:50%;border:3px solid #FFF8FB;box-shadow:0 0 0 1px rgba(76,54,78,.2)}
 /* 05 · new */
 .pg-new .stp{display:grid;grid-template-columns:40px minmax(0,1fr);gap:12px;padding:16px 0;border-bottom:1px solid var(--line)}
-.pg-new .stp .n{font:400 30px/1 'Instrument Serif',serif;color:var(--text2)}
+.pg-new .stp .n{font:400 30px/1 'Manrope',sans-serif;color:var(--text2)}
 .pg-new .tg{width:38px;height:22px;border-radius:11px;background:#E6D9E5;position:relative;border:0;padding:0;flex-shrink:0}
 .pg-new .tg::after{content:"";position:absolute;left:3px;top:3px;width:16px;height:16px;border-radius:50%;background:#FFFFFF;box-shadow:0 1px 2px rgba(0,0,0,.15)}
 .pg-new .tg.on{background:#47705A}
@@ -60,7 +60,7 @@
 .pg-report .fp .tr2 i{position:absolute;left:0;top:0;bottom:0;border-radius:7px}
 .pg-report .fp .lv{font:500 11px/1 'DM Mono',monospace;letter-spacing:.12em;text-align:right}
 .pg-report .why{display:grid;grid-template-columns:48px minmax(0,1fr) 140px;gap:14px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line);font:500 13.5px/1.3 'Manrope',sans-serif}
-.pg-report .why b{font:400 26px/1 'Instrument Serif',serif}
+.pg-report .why b{font:400 26px/1 'Manrope',sans-serif}
 .pg-report .dg{display:grid;grid-template-columns:minmax(0,1.4fr) 70px minmax(0,1fr);gap:12px;padding:11px 18px;border-bottom:1px solid var(--line);font:400 12.5px/1.3 'DM Mono',monospace;align-items:center}
 .pg-report .verdict{position:sticky;top:0;z-index:3;display:flex;align-items:center;gap:14px;height:56px;padding:0 32px;background:rgba(255,255,255,.72);backdrop-filter:blur(20px) saturate(150%);-webkit-backdrop-filter:blur(20px) saturate(150%);border-bottom:1px solid rgba(140,60,90,.14);box-shadow:0 12px 28px -22px rgba(140,40,90,.45)}
 .pg-report .verdict .vsep{width:1px;height:20px;background:rgba(140,60,90,.18)}
@@ -82,7 +82,7 @@
 /* 10 · aifix */
 .pg-aifix .code .src,.pg-aifix .code .ln{font-size:12px;line-height:1.85}
 .pg-aifix .ps{display:grid;grid-template-columns:30px minmax(0,1fr);gap:12px;padding:10px 0;border-bottom:1px solid var(--line);font:500 13.5px/1.45 'Manrope',sans-serif}
-.pg-aifix .ps b{font:400 22px/1 'Instrument Serif',serif;color:#6A4FB8}
+.pg-aifix .ps b{font:400 22px/1 'Manrope',sans-serif;color:#6A4FB8}
 /* 11 · lineage */
 .pg-lineage .vc{position:absolute;width:210px;padding:16px 18px;display:flex;flex-direction:column;gap:6px}
 .pg-lineage .dl{display:grid;grid-template-columns:150px minmax(0,1fr) 54px 54px;gap:12px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line);font:500 13px/1.2 'Manrope',sans-serif}

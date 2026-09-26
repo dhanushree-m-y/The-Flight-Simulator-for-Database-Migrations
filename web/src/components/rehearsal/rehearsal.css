@@ -86,7 +86,7 @@
   .pg-report .fp { grid-template-columns: 110px minmax(0, 1fr) 90px !important; gap: 10px !important; }
   .pg-report .why { grid-template-columns: 40px minmax(0, 1fr) !important; }
   .pg-report .why .cite { display: none; }
-  .pg-report .rp-risk { font-size: 130px !important; }
+  .pg-report .rp-risk { font-size: 96px !important; }
   .pg-report .rp-metrics .hm { flex: 1 1 45% !important; border-left: 0; padding-left: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
