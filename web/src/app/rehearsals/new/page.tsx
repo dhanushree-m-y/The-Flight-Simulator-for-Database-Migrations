@@ -15,25 +15,63 @@ import "@/components/rehearsals/screens.css";
 
 /* ------------------------------------------------------------------ helpers */
 
-/** Editor presets for the hostel demo database. Table names may differ in a real schema — they're examples. */
+/** Editor presets for the Hostel OS demo database (demo/hostel_os). Prisma tables, so identifiers are quoted. */
 const EXAMPLES: { key: string; label: string; up: string; down: string }[] = [
   {
     key: "capacity",
-    label: "Room capacity check",
-    up: "-- room_capacity_check\n-- example · adjust table/column names to your schema\nALTER TABLE rooms\n  ADD CONSTRAINT rooms_capacity_check CHECK (occupied <= capacity);\n",
-    down: "ALTER TABLE rooms DROP CONSTRAINT rooms_capacity_check;\n",
+    label: "Room occupancy check",
+    up: `-- room_occupancy_check
+ALTER TABLE "Room" ADD COLUMN "occupiedCount" integer NOT NULL DEFAULT 0;
+UPDATE "Room" r SET "occupiedCount" = (
+  SELECT count(*) FROM "Bed" b
+  JOIN "Allocation" a ON a."bedId" = b.id AND a.status = 'ACTIVE'
+  WHERE b."roomId" = r.id);
+ALTER TABLE "Room"
+  ADD CONSTRAINT "Room_occupancy_check" CHECK ("occupiedCount" <= capacity);
+`,
+    down: `ALTER TABLE "Room" DROP CONSTRAINT IF EXISTS "Room_occupancy_check";
+ALTER TABLE "Room" DROP COLUMN "occupiedCount";
+`,
   },
   {
     key: "phone",
     label: "Unique student phone",
-    up: "-- students_phone_unique\n-- example · adjust table/column names to your schema\nALTER TABLE students\n  ADD CONSTRAINT students_phone_key UNIQUE (phone);\n",
-    down: "ALTER TABLE students DROP CONSTRAINT students_phone_key;\n",
+    up: `-- student_phone_unique
+ALTER TABLE "Student"
+  ADD CONSTRAINT "Student_phone_key" UNIQUE (phone);
+`,
+    down: `ALTER TABLE "Student" DROP CONSTRAINT "Student_phone_key";
+`,
+  },
+  {
+    key: "guardian",
+    label: "Require guardian phone",
+    up: `-- student_guardian_phone_required
+ALTER TABLE "Student"
+  ALTER COLUMN "guardianPhone" SET NOT NULL;
+`,
+    down: `ALTER TABLE "Student" ALTER COLUMN "guardianPhone" DROP NOT NULL;
+`,
+  },
+  {
+    key: "amount",
+    label: "Payment amount to integer",
+    up: `-- payment_amount_integer
+ALTER TABLE "Payment"
+  ALTER COLUMN amount TYPE integer;
+`,
+    down: `ALTER TABLE "Payment" ALTER COLUMN amount TYPE double precision;
+`,
   },
   {
     key: "mess",
     label: "Add mess plan column",
-    up: "-- students_mess_plan\n-- example · adjust table/column names to your schema\nALTER TABLE students\n  ADD COLUMN mess_plan text NOT NULL DEFAULT 'veg';\n",
-    down: "ALTER TABLE students DROP COLUMN mess_plan;\n",
+    up: `-- student_mess_plan
+ALTER TABLE "Student"
+  ADD COLUMN "messPlan" text NOT NULL DEFAULT 'VEG';
+`,
+    down: `ALTER TABLE "Student" DROP COLUMN "messPlan";
+`,
   },
 ];
 
@@ -441,7 +479,7 @@ function NewRehearsal() {
                   hints={hints ?? undefined}
                   dark={dark}
                   height={300}
-                  placeholder={"-- 004_room_capacity.sql\nALTER TABLE rooms ADD CONSTRAINT …"}
+                  placeholder={'-- 004_room_occupancy.sql\nALTER TABLE "Room" ADD CONSTRAINT …'}
                 />
               ) : (
                 <UploadDrop onFile={readFile} />

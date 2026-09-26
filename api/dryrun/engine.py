@@ -468,7 +468,9 @@ def apply_migration(rid: str) -> dict[str, Any]:
                        "explanation": f"{err['message']}" + (f" — {err['detail']}" if err.get("detail") else "") +
                        ". PostgreSQL rolled the transaction back, so the sandbox is unchanged. In production this would fail mid-deploy."})
         rec.stage("migrate", "failed", f"rejected · {err['sqlstate']}")
-        evidence = _probe_failure(rec, dsn, res["failed_statement"], err)
+        failed = res["failed_statement"]
+        prior = stmts[: stmts.index(failed)] if failed in stmts else []
+        evidence = _probe_failure(rec, dsn, failed, err, prior=prior)
     rec.set(error=None)
     store.update_state(rid, applied=True, apply_result={k: res[k] for k in ("ok", "error", "timings", "failed_statement")})
     return {
@@ -496,8 +498,12 @@ def _balanced_after(text: str, start: int) -> str | None:
     return None
 
 
-def _probe_failure(rec: Recorder, dsn: str, stmt: str, err: dict[str, Any]) -> list[dict[str, Any]]:
-    """Deterministic evidence for common failures: find the exact rows that break the migration."""
+def _probe_failure(rec: Recorder, dsn: str, stmt: str, err: dict[str, Any], prior: list[str] | None = None) -> list[dict[str, Any]]:
+    """Deterministic evidence for common failures: find the exact rows that break the migration.
+
+    PostgreSQL rolled the whole migration back, so columns added by earlier statements (e.g. ADD COLUMN + UPDATE
+    before the CHECK) no longer exist. `prior` statements are replayed in a transaction that is always rolled
+    back, so the probe sees the same state the failing statement saw. This only ever runs against the sandbox."""
     code = err.get("sqlstate")
     tables = analyzer.tables_in(stmt)
     table = err.get("table") or (tables[0] if tables else None)
@@ -509,6 +515,10 @@ def _probe_failure(rec: Recorder, dsn: str, stmt: str, err: dict[str, Any]) -> l
     try:
         with connect(dsn, autocommit=True, app="dryrun-evidence") as c:
             c.execute("SET statement_timeout = '15s'")
+            if prior:
+                c.execute("BEGIN")
+                for p in prior:
+                    c.execute(p, prepare=False)
             if code == "23505":  # unique_violation
                 m = re.search(r"Key \((.+?)\)=", err.get("detail") or "")
                 cols = [x.strip().strip('"') for x in m.group(1).split(",")] if m else []
