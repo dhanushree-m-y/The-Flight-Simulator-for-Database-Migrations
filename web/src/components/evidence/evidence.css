@@ -1,0 +1,78 @@
+/* Evidence screens (broken rows · impact · AI fix · lineage · rollback): shared sub-nav + fluid grids.
+   Page-specific visual rules live in styles/pages.css under .pg-<name>; this file only adds what the
+   1440px artboards could not express (responsive collapse, generic data grid, thinking animation). */
+
+.ev-nav { display: flex; flex-wrap: wrap; gap: 4px; padding: 4px; width: fit-content; max-width: 100%; border-radius: 12px; background: var(--glass); border: 1px solid var(--line); }
+.ev-nav a { display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 12px; border-radius: 9px; border: 1px solid transparent; font: 600 12.5px/1 var(--f-ui); color: var(--text2); text-decoration: none; white-space: nowrap; transition: background .2s, color .2s; }
+.ev-nav a:hover { color: var(--text); }
+.ev-nav a[aria-current="page"] { background: var(--surface); border-color: var(--line); color: var(--text); box-shadow: 0 1px 2px rgba(76, 54, 78, .08); }
+.ev-nav a:focus-visible, .ev-focus:focus-visible { outline: 2px solid var(--purple); outline-offset: 2px; }
+
+.ev-crumb { text-decoration: none; }
+.ev-crumb:hover { color: var(--text); }
+
+/* two-column page body: main + 340px side panel (rows, impact) */
+.ev-split { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 22px; align-items: start; }
+/* AI fix: original · reasoning card · safer version */
+.ev-fix3 { display: grid; grid-template-columns: minmax(0, .8fr) 300px minmax(0, 1.3fr); gap: 22px; align-items: start; }
+/* lineage bottom row, rollback body */
+.ev-lin2 { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 22px; align-items: start; }
+.ev-rb2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 26px; align-items: start; }
+.ev-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); column-gap: 26px; }
+
+@media (max-width: 1280px) {
+  .ev-fix3 { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .ev-fix3 > .ev-fix-card { grid-column: 1 / -1; grid-row: 1; }
+}
+@media (max-width: 1100px) {
+  .ev-split, .ev-lin2, .ev-rb2, .ev-fix3 { grid-template-columns: minmax(0, 1fr); }
+  .ev-sticky { position: static !important; }
+}
+
+/* generic broken-row grid (column count comes from the API) */
+.pg-rows .ev-grid { overflow-x: auto; }
+.pg-rows .ev-grid .rr { cursor: pointer; transition: background .15s; }
+.pg-rows .ev-grid .rr:not(.ev-head):not(.sel):hover { background: rgba(250, 244, 255, .6); }
+.pg-rows .ev-grid .rr:focus-visible { outline: 2px solid var(--purple); outline-offset: -2px; }
+.pg-rows .ev-grid .rr > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pg-rows .ev-grid .ev-head { cursor: default; font: 500 10.5px/1 var(--f-mono); letter-spacing: .14em; color: var(--text2); padding-top: 15px; padding-bottom: 15px; text-transform: uppercase; position: sticky; top: 0; background: var(--surface); z-index: 1; }
+.pg-rows .ev-search { width: 320px; max-width: 100%; }
+.pg-rows .ev-search input { flex: 1; min-width: 0; border: 0; background: transparent; outline: none; font: inherit; color: var(--text); }
+.pg-rows select.fc { padding-right: 28px; appearance: none; background-image: linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%); background-position: calc(100% - 15px) 15px, calc(100% - 10px) 15px; background-size: 5px 5px; background-repeat: no-repeat; }
+.pg-rows .ev-checks { display: flex; flex-wrap: wrap; gap: 8px; }
+.pg-rows .ev-checks .fc { cursor: pointer; }
+.pg-rows .ev-checks .fc i { font-style: normal; font-family: var(--f-mono); font-size: 11.5px; }
+
+/* impact graph nodes are buttons */
+.pg-impact .nd { outline: none; }
+.pg-impact .nd:focus-visible { box-shadow: 0 0 0 3px rgba(119, 88, 200, .45); }
+.pg-impact .nd:hover { transform: translateY(-2px); }
+.pg-impact .bl a { text-decoration: none; }
+.pg-impact .bl a:hover { text-decoration: underline; }
+
+/* lineage version cards are links */
+.pg-lineage .vc { text-decoration: none; color: var(--text); transition: transform .25s, box-shadow .25s; }
+.pg-lineage .vc:hover { transform: translateY(-3px); }
+.pg-lineage .vc:focus-visible { outline: 2px solid var(--purple); outline-offset: 3px; }
+.pg-lineage .pair { height: 28px; padding: 0 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); font: 500 11.5px/1 var(--f-mono); color: var(--text2); cursor: pointer; }
+.pg-lineage .pair.on { background: #EEE7FF; border-color: rgba(119, 88, 200, .35); color: #6A4FB8; }
+
+/* AI fix "agent is thinking" */
+.ev-think { display: inline-flex; gap: 6px; align-items: center; }
+.ev-think i { width: 8px; height: 8px; border-radius: 50%; background: var(--purple); animation: ev-think 1.2s ease-in-out infinite; }
+.ev-think i:nth-child(2) { animation-delay: .15s; background: #B9A2F0; }
+.ev-think i:nth-child(3) { animation-delay: .3s; background: var(--rose); }
+@keyframes ev-think { 0%, 80%, 100% { transform: scale(.55); opacity: .45 } 40% { transform: scale(1); opacity: 1 } }
+.ev-stream { overflow: hidden; }
+.ev-stream > div { animation: ev-stream 2.4s ease-in-out infinite; }
+.ev-stream > div:nth-child(2) { animation-delay: .3s; }
+.ev-stream > div:nth-child(3) { animation-delay: .6s; }
+.ev-stream > div:nth-child(4) { animation-delay: .9s; }
+.ev-stream > div:nth-child(5) { animation-delay: 1.2s; }
+@keyframes ev-stream { 0% { opacity: .25; transform: translateX(-6px) } 50% { opacity: 1; transform: none } 100% { opacity: .25 } }
+.pg-aifix textarea.inp { font: 400 12.5px/1.85 var(--f-mono); min-height: 320px; white-space: pre; overflow-x: auto; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ev-think i, .ev-stream > div { animation: none; opacity: 1; transform: none; }
+  .pg-impact .nd:hover, .pg-lineage .vc:hover { transform: none; }
+}
