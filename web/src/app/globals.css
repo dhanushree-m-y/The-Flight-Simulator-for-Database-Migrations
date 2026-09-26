@@ -55,3 +55,7 @@ select.inp { font-family: var(--f-ui); }
 
 /* The Bloom theme turns headings cream on the sunset; inside white glass/panels they must stay ink-coloured. */
 .pm:not(.calm):not(.dark) :is(.glass, .panel, .verdict, .cmdk-box) :is(.display, .h1, .h2, .b-head) { color: var(--text); text-shadow: none; }
+
+/* Active tab pills are white; keep their label ink-coloured on the sunset theme. */
+.pm:not(.calm):not(.dark) .tabb.on, .pm:not(.calm):not(.dark) [aria-current="page"].tabb { color: #261F29; }
+.dark .ev-nav a[aria-current="page"], .dark .tabb.on { background: var(--surface); color: var(--text); }
