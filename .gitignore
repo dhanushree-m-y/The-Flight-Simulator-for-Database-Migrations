@@ -20,3 +20,6 @@ frontend-design.html
 
 # personal handoff notes (local paths, status) — not part of the public repo
 MEMORY.md
+
+# generated demo dump (22 MB) — rebuild with: python demo/hostel_os/generate.py
+demo/hostel_os/hostel_os.sql
