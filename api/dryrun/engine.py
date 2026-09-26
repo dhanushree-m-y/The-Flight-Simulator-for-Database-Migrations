@@ -880,7 +880,7 @@ def test_rollback(rid: str, down_sql: str | None = None, source: str = "user") -
 # Step 6 — report: risk score, verdict, policies
 # ---------------------------------------------------------------------------------------------
 
-def score(doc: dict[str, Any], table_rows: dict[str, int]) -> tuple[int, list[dict[str, Any]]]:
+def score(doc: dict[str, Any], table_rows: dict[str, int], max_lock_ms: float = 2000) -> tuple[int, list[dict[str, Any]]]:
     parts: dict[str, dict[str, Any]] = {}
 
     def add(kind: str, label: str, pts: float, cap: float) -> None:
@@ -906,12 +906,10 @@ def score(doc: dict[str, Any], table_rows: dict[str, int]) -> tuple[int, list[di
             add("ai", "AI safety checks", 12, 30)
         elif c["group"] == "ai" and c["status"] == "warn":
             add("ai", "AI safety checks", 5, 15)
-    lock_pol = policies.by_key("max_exclusive_lock")
-    max_ms = lock_pol["params"]["max_lock_ms"] if lock_pol else 2000
     for lk in doc.get("locks", []):
         rows_n = table_rows.get(lk["table"], 0)
         if lk["mode"] == "ACCESS EXCLUSIVE":
-            add("lock", "Table locks", 15 if lk["duration_ms"] > max_ms else 6 if rows_n > 10_000 else 3, 20)
+            add("lock", "Table locks", 15 if lk["duration_ms"] > max_lock_ms else 6 if rows_n > 10_000 else 3, 20)
         elif lk["mode"] in ("SHARE", "SHARE ROW EXCLUSIVE", "EXCLUSIVE"):
             add("lock", "Table locks", 2, 20)
     rb = doc.get("rollback")
@@ -959,7 +957,8 @@ def finalize(rid: str, *, headline: str | None = None, summary: str | None = Non
         rec.stage("rollback", "skipped", "no rollback tested")
     rec.stage("report", "running", "scoring")
     table_rows = st.get("table_rows", {})
-    risk, parts = score(rec.doc, table_rows)
+    lock_pol = policies.by_key("max_exclusive_lock")
+    risk, parts = score(rec.doc, table_rows, lock_pol["params"]["max_lock_ms"] if lock_pol else 2000)
     rec.doc["risk"] = risk
     violations = [v for v in policies.evaluate(rec.doc, table_rows=table_rows) if v["policy_id"] != "pol_risk"]
     for v in violations:
