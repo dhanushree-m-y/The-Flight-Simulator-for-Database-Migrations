@@ -75,18 +75,25 @@ Most teams find out in production.
 | `api/dryrun/audit.py` | tamper-evident audit chain |
 | `web/src/app/**` | 20+ screens ported from our Claude Design file (live mission control, report, evidence, approvals…) |
 
-### How TrueForge is used
+### How TrueForge is used (every harness capability)
 
-- **Agent runtime:** `dryrun-rehearsal-agent` is a TrueForge agent spec (model, instructions, MCP servers, config)
-  created via `POST /api/v1/agents`; every rehearsal is a TrueForge **session** and each step is a **turn**
-  streamed over SSE (`/api/v1/sessions/{id}/turns`).
-- **Tools:** DryRun's engine is registered as a remote **MCP server** (`POST /api/v1/settings/mcp-servers`, header auth).
-- **Tool approval (human in the loop):** `require_approval_for_tools: ["apply_to_production", "restore_production_backup"]`;
-  DryRun resumes the paused turn with `user.tool_approval`.
-- **Models:** any provider configured in TrueForge (`provider/model`), switchable via `DRYRUN_AGENT_MODEL`.
-- **Sandbox:** the rehearsal sandbox is a throwaway Postgres clone; TrueForge's Daytona code sandbox can be enabled
-  for the agent with `DRYRUN_AGENT_SANDBOX=true`.
-- Every live rehearsal links to its TrueForge session ("Open in TrueForge ↗").
+| TrueForge capability | How DryRun uses it |
+|---|---|
+| **Agent runtime · sessions · streamed turns** | `dryrun-rehearsal-agent` (created via `POST /api/v1/agents`); every rehearsal is a session, streamed over SSE |
+| **Model (any provider)** | the team's **OpenAI** model (`openai/gpt-5-5`) configured in TrueForge → Settings → Models |
+| **Tools via MCP** | DryRun's engine is a remote MCP server with 12 tools (`POST /api/v1/settings/mcp-servers`, header auth) |
+| **Tool approval — human in the loop** | `require_approval_for_tools: [apply_to_production, restore_production_backup]`; resumed with `user.tool_approval` after the DryRun approval |
+| **Sub-agents** | integrity investigator, hostel-rules investigator and rollback author run in parallel |
+| **Ask clarifying questions** | "This removes 38 rows — intended?" shown on DryRun's live page; the answer resumes the turn (`user.tool_response`) |
+| **Generative UI** | the agent renders a verdict card inside the TrueForge chat |
+| **Sandbox + Code Mode** | Daytona sandbox auto-enabled when configured; the agent aggregates check results in Python there |
+| **Context engineering** | compaction at 80k tokens, large tool responses offloaded, deferred tool loading (only the brief is preloaded) |
+| **Background execution · schedules** | `dryrun-nightly-drift-check` re-rehearses approved-but-unapplied migrations every night against fresh data |
+
+Every live rehearsal links to its TrueForge session ("Open in TrueForge ↗").
+
+**Other tech from the organisers:** OpenAI (team key, entered only in TrueForge) and **AWS S3** — every production
+backup gets an encrypted off-site copy when `AWS_S3_BUCKET` is set (credentials via `aws configure`).
 
 ---
 

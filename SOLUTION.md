@@ -26,9 +26,11 @@ diff, FK integrity, schema diff → agent-written read-only checks → rollback 
 and policies. Every action is written to a SHA-256 hash-chained audit log.
 
 ## How TrueForge is used
-Agent spec, sessions and streamed turns via the TrueForge API; tools via its MCP connector (header auth);
-**Tool Approval** (`require_approval_for_tools`) for the human-in-the-loop gate, resumed with `user.tool_approval`;
-any model provider through TrueForge settings. Each rehearsal links to its TrueForge session.
+Agent spec, sessions and streamed turns via the TrueForge API with the team's OpenAI model; DryRun's engine as an MCP
+server; **Tool Approval** gates production (resumed with `user.tool_approval`); **sub-agents** investigate in
+parallel; **ask_user_question** pauses to confirm intent with the engineer; **Generative UI** verdict cards;
+**compaction, large-tool-response offloading and deferred tools**; the **Daytona sandbox** for Code Mode; and a
+**schedule** for a nightly drift check. Production backups are also copied to **AWS S3**.
 
 ## Real vs. mocked
 **Real:** sandbox clones, migrations, lock timing, evidence, diffs, rollback proof, TrueForge agent and approvals,
