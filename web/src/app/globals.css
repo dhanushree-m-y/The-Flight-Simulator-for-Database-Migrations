@@ -49,3 +49,6 @@ select.inp { font-family: var(--f-ui); }
   .top { padding: 0 16px; }
   .top .search { display: none; }
 }
+
+/* .pm uses overflow:hidden for the atmosphere; clip keeps that but lets position:sticky work (sidebar, verdict bar). */
+.pm.app { overflow: clip; }
