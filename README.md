@@ -25,7 +25,8 @@
   <a href="#-screenshots">Screenshots</a> ·
   <a href="#-tech-stack">Tech stack</a> ·
   <a href="#-setup">Setup</a> ·
-  <a href="SOLUTION.md">Write-up</a>
+  <a href="SOLUTION.md">Write-up</a> ·
+  <a href="DryRun-Documentation.pdf"><b>📄 2-page documentation (PDF)</b></a>
 </p>
 
 <p align="center">
