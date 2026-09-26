@@ -170,6 +170,8 @@ export interface Rehearsal extends RehearsalSummary {
   sandbox: SandboxInfo | null;
   policy_violations: PolicyViolation[];
   error: string | null;
+  /** The TrueForge session that drove this rehearsal (open it in the TrueForge UI). */
+  agent: { provider: "trueforge" | "direct"; session_id: string | null; url: string | null; model: string | null } | null;
 }
 
 export interface BrokenRows {
@@ -192,6 +194,12 @@ export interface AiFix {
   why_safer: string[];
   model: string | null;
   created_at: string;
+}
+
+export interface AiFixState {
+  state: "none" | "running" | "ready" | "failed";
+  fix: AiFix | null;
+  error: string | null;
 }
 
 export type ApprovalStatus = "pending" | "approved" | "rejected" | "applied" | "apply_failed" | "restored";
@@ -312,6 +320,7 @@ export interface Overview {
 }
 
 export type LiveEvent =
+  | { type: "snapshot"; rehearsal: Rehearsal }
   | { type: "stage"; stage: Stage }
   | { type: "log"; line: LogLine }
   | { type: "metrics"; metrics: Metrics }
