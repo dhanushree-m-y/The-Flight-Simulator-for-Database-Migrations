@@ -1007,7 +1007,17 @@ def finalize(rid: str, *, headline: str | None = None, summary: str | None = Non
             rec.stage("ai_checks", "skipped", "no AI checks (direct mode)")
     rb_stage = next(s for s in rec.doc["stages"] if s["key"] == "rollback")
     if rb_stage["status"] == "pending":
-        rec.stage("rollback", "skipped", "no rollback tested")
+        # The rollback proof must not depend on the agent remembering it: if a down migration exists and the
+        # migration applied, DryRun proves it here before scoring.
+        if st["apply_result"]["ok"] and rec.doc.get("down_sql") and not st.get("rollback_done"):
+            rec.log("info", "dryrun", "agent skipped the rollback proof — DryRun is running it before the report")
+            try:
+                test_rollback(rid)
+            except Exception as e:  # noqa: BLE001
+                rec.log("error", "rollback", f"automatic rollback proof failed: {str(e)[:200]}")
+                rec.stage("rollback", "failed", "could not run the down migration")
+        else:
+            rec.stage("rollback", "skipped", "no rollback migration provided" if st["apply_result"]["ok"] else "nothing to undo")
     rec.stage("report", "running", "scoring")
     table_rows = st.get("table_rows", {})
     lock_pol = policies.by_key("max_exclusive_lock")
