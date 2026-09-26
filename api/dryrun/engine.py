@@ -223,6 +223,19 @@ def brief(rid: str) -> dict[str, Any]:
         c.execute("SET TRANSACTION READ ONLY")
         schema = profiler.schema_summary(c)
     stmts = analyzer.split_statements(doc["up_sql"])
+    # Keep the brief small enough for the model's context: full columns only for the tables the migration
+    # touches and their direct foreign-key neighbours; every other table is listed by name and row count.
+    touched = {t for st_ in stmts for t in analyzer.tables_in(st_)}
+    names = {t["name"] for t in schema}
+    touched = {t for t in touched if t in names} or touched
+    near = set(touched)
+    for t in schema:
+        if t["name"] in touched:
+            near.update(t["references"])
+        elif touched & set(t["references"]):
+            near.add(t["name"])
+    focus = [t for t in schema if t["name"] in near]
+    others = [{"name": t["name"], "rows": t["rows"]} for t in schema if t["name"] not in near]
     return {
         "rehearsal_id": rid,
         "migration_name": doc["name"],
@@ -234,7 +247,8 @@ def brief(rid: str) -> dict[str, Any]:
         "statements": [
             {"sql": s, "tables": analyzer.tables_in(s), "locks": [lk.__dict__ for lk in analyzer.lock_for(s)]} for s in stmts
         ],
-        "schema": schema,
+        "schema_focus": focus,
+        "other_tables": others,
         "static_hints": analyzer.hints(doc["up_sql"]),
         "policies": [{"title": p["title"], "severity": p["severity"], "params": p["params"]} for p in policies.all_policies() if p["enabled"]],
     }

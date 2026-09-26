@@ -7,7 +7,7 @@ down = sys.argv[3] if len(sys.argv) > 3 else None
 req = urllib.request.Request(f"{API}/api/rehearsals", data=json.dumps({"connection_id": __import__("os").environ.get("CONN", "conn_prod"), "name": name, "up_sql": up, "down_sql": down}).encode(),
                              headers={"Content-Type": "application/json", "X-DryRun-User": "u_engineer"})
 rid = json.load(urllib.request.urlopen(req))["id"]
-for _ in range(120):
+for _ in range(int(__import__("os").environ.get("WAIT", "120"))):
     d = json.load(urllib.request.urlopen(f"{API}/api/rehearsals/{rid}"))
     if d["status"] not in ("queued", "running"):
         break
