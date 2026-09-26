@@ -52,3 +52,6 @@ select.inp { font-family: var(--f-ui); }
 
 /* .pm uses overflow:hidden for the atmosphere; clip keeps that but lets position:sticky work (sidebar, verdict bar). */
 .pm.app { overflow: clip; }
+
+/* The Bloom theme turns headings cream on the sunset; inside white glass/panels they must stay ink-coloured. */
+.pm:not(.calm):not(.dark) :is(.glass, .panel, .verdict, .cmdk-box) :is(.display, .h1, .h2, .b-head) { color: var(--text); text-shadow: none; }
