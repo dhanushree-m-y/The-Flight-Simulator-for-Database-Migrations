@@ -17,7 +17,7 @@ from fastapi.responses import PlainTextResponse
 from pydantic import BaseModel, Field
 from sse_starlette.sse import EventSourceResponse
 
-from . import agent, analyzer, audit, engine, events, policies, production, profiler, report, sandbox, store
+from . import agent, analyzer, audit, engine, events, policies, production, profiler, report, sandbox, service, store
 from .config import settings
 from .db import connect, database_of, masked_host
 from .mcp_tools import mcp
@@ -301,25 +301,12 @@ class NewRehearsal(BaseModel):
 
 
 def _create(body: NewRehearsal, u: dict[str, Any]) -> dict[str, Any]:
-    conn = store.get("connections", body.connection_id)
-    if not conn:
-        raise HTTPException(404, "connection not found")
-    if not analyzer.split_statements(body.up_sql):
-        raise HTTPException(400, "migration has no SQL statements")
-    lineage_id, version = store.new_id("lin"), 1
-    if body.parent_id:
-        parent = _rehearsal(body.parent_id)
-        lineage_id = parent["lineage_id"]
-        version = max(r["version"] for r in store.list_rehearsals(limit=100, lineage_id=lineage_id)) + 1
-    rid = store.new_id("reh")
-    doc = engine.new_rehearsal_doc(rid=rid, name=body.name.strip(), version=version, lineage_id=lineage_id, parent_id=body.parent_id,
-                                   connection=conn, up_sql=body.up_sql.strip(), down_sql=(body.down_sql or "").strip() or None, user=u,
-                                   options={**body.options, **({"github_pr": body.github_pr} if body.github_pr else {})})
-    store.save_rehearsal(doc)
-    store.save_state(rid, {})
-    audit.record("rehearsal.started", actor=u["id"], target=rid, name=doc["name"], version=version, connection=conn["name"])
-    _thread(agent.start_rehearsal, rid)
-    return engine.public(doc)
+    try:
+        return service.create_rehearsal(connection_id=body.connection_id, name=body.name, up_sql=body.up_sql, down_sql=body.down_sql,
+                                        parent_id=body.parent_id, user=u,
+                                        options={**body.options, **({"github_pr": body.github_pr} if body.github_pr else {})})
+    except service.CreateError as e:
+        raise HTTPException(e.status, str(e)) from e
 
 
 @app.post("/api/rehearsals")
@@ -364,6 +351,29 @@ def cancel(rid: str, u: dict = Depends(require("engineer", "approver"))) -> dict
     engine.cancel(rid)
     audit.record("rehearsal.cancelled", actor=u["id"], target=rid)
     return engine.public(_rehearsal(rid))
+
+
+class Answer(BaseModel):
+    answer: str = Field(min_length=1, max_length=500)
+
+
+@app.post("/api/rehearsals/{rid}/answer")
+def answer(rid: str, body: Answer, u: dict = Depends(require("engineer", "approver"))) -> dict[str, Any]:
+    _rehearsal(rid)
+    if not agent.answer_question(rid, body.answer):
+        raise HTTPException(409, "the agent is not waiting for an answer")
+    audit.record("engineer.answered", actor=u["id"], target=rid, answer=body.answer)
+    return {"ok": True}
+
+
+@app.post("/api/trueforge/drift-check")
+def drift_check(u: dict = Depends(require("approver"))) -> dict[str, Any]:
+    try:
+        out = agent.run_drift_check_now()
+    except Exception as e:  # noqa: BLE001
+        raise HTTPException(502, str(e)) from e
+    audit.record("drift.triggered", actor=u["id"])
+    return {"ok": True, "run": out.get("data", out)}
 
 
 @app.get("/api/rehearsals/{rid}/report.md", response_class=PlainTextResponse)
@@ -618,12 +628,19 @@ def verify_audit() -> dict[str, Any]:
 def integrations() -> list[dict[str, Any]]:
     s = settings()
     tf = agent.status()
+    sched = agent.schedule_info() if tf["reachable"] else None
     provider_names = [((p.get("manifest") or p).get("name") or (p.get("manifest") or p).get("type")) for p in tf["providers"]]
     return [
         {"key": "truefoundry", "name": "TrueForge agent harness", "connected": tf["reachable"],
          "detail": f"{s.trueforge_base_url} · agent {s.dryrun_agent_name} · mode {s.dryrun_agent_mode}" + ("" if tf["reachable"] else f" · unreachable: {tf.get('error', '')}")},
         {"key": "llm", "name": "Model via TrueForge", "connected": bool(tf["providers"]),
          "detail": f"{s.dryrun_agent_model} · providers: {', '.join(filter(None, provider_names)) or 'none configured in TrueForge Settings → Models'}"},
+        {"key": "sandbox", "name": "TrueForge sandbox (Daytona)", "connected": bool(tf.get("sandbox")),
+         "detail": "agent code runs in an isolated Daytona sandbox (Code Mode)" if tf.get("sandbox") else "add a Daytona key in TrueForge > Settings > Sandbox providers"},
+        {"key": "schedule", "name": "Nightly drift check (TrueForge schedule)", "connected": bool(sched),
+         "detail": f"cron {s.dryrun_drift_cron} Asia/Kolkata · re-rehearses pending approvals against fresh data" if sched else "registered when TrueForge is reachable"},
+        {"key": "aws", "name": "AWS S3 backups", "connected": bool(s.aws_s3_bucket),
+         "detail": f"s3://{s.aws_s3_bucket} ({s.aws_region})" if s.aws_s3_bucket else "set AWS_S3_BUCKET and run aws configure"},
         {"key": "github", "name": "GitHub", "connected": bool(s.github_token and s.github_repo), "detail": s.github_repo or "set GITHUB_TOKEN and GITHUB_REPO to post PR checks"},
         {"key": "slack", "name": "Slack", "connected": bool(s.slack_webhook_url), "detail": "approval notifications" if s.slack_webhook_url else "set SLACK_WEBHOOK_URL"},
     ]

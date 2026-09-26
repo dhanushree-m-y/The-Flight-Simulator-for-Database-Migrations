@@ -1,32 +1,45 @@
 "use client";
 
 import Link from "next/link";
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
+import { toast } from "sonner";
 import { TopBar } from "@/components/shell/AppShell";
-import { useApi } from "@/lib/api";
+import { api, useApi } from "@/lib/api";
 import { fmtTime, riskBand } from "@/lib/format";
 import type { Integration, RehearsalSummary } from "@/lib/types";
 import { BrandMark } from "@/components/icons";
 import { EmptyState, FailState, LoadState, PageHead } from "@/components/admin/kit";
 
-const ORDER: Integration["key"][] = ["truefoundry", "llm", "github", "slack"];
+const ORDER: Integration["key"][] = ["truefoundry", "llm", "sandbox", "schedule", "aws", "github", "slack"];
 
 const COPY: Record<Integration["key"], { title: string; body: string }> = {
   truefoundry: {
     title: "TrueForge",
-    body: "Agent harness and sandbox infrastructure. DryRun runs as a TrueForge agent session, and every rehearsal gets a fresh, isolated database that is destroyed afterwards.",
+    body: "The agent harness. Every rehearsal is a TrueForge session: the agent calls DryRun's MCP tools, spawns sub-agents, asks the engineer when intent is unclear, and pauses on the approval-gated production tools.",
   },
   llm: {
     title: "LLM · TrueForge",
-    body: "AI checks, plain-language explanations and fix proposals come from a model served through the TrueForge model provider. It reads evidence; it never writes to a database.",
+    body: "The team's OpenAI model, configured once in TrueForge → Settings → Models. It writes read-only checks, plain-language verdicts and fix proposals; it never writes to production.",
   },
   github: {
     title: "GitHub",
-    body: "Detects migration files in pull requests and rehearses them automatically, with a required check that blocks the merge on ✕.",
+    body: "Posts the rehearsal report as a comment on the pull request that contains the migration (set GITHUB_TOKEN, GITHUB_REPO and the PR number on the rehearsal).",
   },
   slack: {
     title: "Slack",
-    body: "Posts approval requests and results. Approving from Slack still asks for the typed database name in DryRun.",
+    body: "Posts rehearsal verdicts and approval requests to a channel. Approving still happens in DryRun with the typed database name.",
+  },
+  sandbox: {
+    title: "TrueForge sandbox · Daytona",
+    body: "Isolated compute for code the agent generates (Code Mode). Enabled automatically once a Daytona provider is added in TrueForge; migrations themselves always run in a throwaway database clone.",
+  },
+  schedule: {
+    title: "Nightly drift check",
+    body: "A TrueForge schedule wakes the agent every night to re-rehearse approved-but-unapplied migrations against that day's data, because yesterday's safe verdict can go stale.",
+  },
+  aws: {
+    title: "AWS S3 backups",
+    body: "Every backup taken before a production apply is also copied to an encrypted S3 bucket, so a restore never depends on this machine.",
   },
 };
 
@@ -82,9 +95,16 @@ function Card({ i, sample }: { i: Integration; sample: RehearsalSummary | null }
     extra = (
       <>
         <div className="kv"><span>Environment status</span>{i.connected ? <span className="row" style={{ gap: 6, color: "#47705A" }}><span className="dot breathe" aria-hidden="true" />operational</span> : <span style={{ color: "#A8234F" }}>unreachable</span>}</div>
-        <div className="kv"><span>Isolation</span><span>own network · no egress</span></div>
-        <div className="kv"><span>Lifetime</span><span>destroyed after each rehearsal</span></div>
+        <div className="kv"><span>Rehearsal sandbox</span><span>throwaway database clone</span></div>
+        <div className="kv"><span>Lifetime</span><span>auto-deleted after 45 min</span></div>
         <div className="kv"><span>Route to production</span><span style={{ color: "#47705A" }}>✓ none · only via approval</span></div>
+      </>
+    );
+  if (i.key === "schedule")
+    extra = (
+      <>
+        <div className="kv"><span>Schedule</span><span>{i.detail}</span></div>
+        <DriftNow />
       </>
     );
   if (i.key === "llm")
@@ -217,5 +237,32 @@ function HowTrueForge() {
         ))}
       </ol>
     </section>
+  );
+}
+
+
+/** Trigger the TrueForge schedule now (background execution) instead of waiting for 02:30. */
+function DriftNow() {
+  const [busy, setBusy] = useState(false);
+  return (
+    <button
+      type="button"
+      className="btn btn-sm btn-ai"
+      style={{ alignSelf: "flex-start", marginTop: 8 }}
+      disabled={busy}
+      onClick={async () => {
+        setBusy(true);
+        try {
+          await api("/api/trueforge/drift-check", { method: "POST" });
+          toast.success("Drift check started in TrueForge — new rehearsal versions will appear in Rehearsals");
+        } catch (e) {
+          toast.error(e instanceof Error ? e.message : "Could not start the drift check");
+        } finally {
+          setBusy(false);
+        }
+      }}
+    >
+      ▶ Run drift check now
+    </button>
   );
 }

@@ -11,7 +11,7 @@ from typing import Any, Callable
 from mcp.server.mcpserver import MCPServer
 from mcp.types import ToolAnnotations
 
-from . import audit, engine, production, store
+from . import audit, engine, production, service, store
 
 mcp = MCPServer(
     name="dryrun",
@@ -148,3 +148,37 @@ async def restore_production_backup(approval_id: str) -> dict[str, Any]:
     appr = store.get("approvals", approval_id) or {}
     actor = (appr.get("decided_by") or {}).get("id") or "agent"
     return await _call(production.restore, approval_id, actor)
+
+
+@mcp.tool(annotations=READ)
+async def list_pending_approvals() -> dict[str, Any]:
+    """List production approvals that are pending or approved but not yet applied (used by the nightly drift check)."""
+
+    def _list() -> dict[str, Any]:
+        out = []
+        for a in store.list_approvals():
+            if a["status"] in ("pending", "approved"):
+                r = a["rehearsal"]
+                out.append({"approval_id": a["id"], "status": a["status"], "rehearsal_id": r["id"], "migration": r["name"],
+                            "version": r["version"], "risk": r["risk"], "rehearsed_at": r["created_at"]})
+        return {"approvals": out}
+
+    return await _call(_list)
+
+
+@mcp.tool(annotations=SANDBOX_WRITE)
+async def rerun_rehearsal(rehearsal_id: str) -> dict[str, Any]:
+    """Re-rehearse an existing migration against TODAY's production data as a new version (drift check). Runs in a
+    fresh sandbox in the background; production is not touched."""
+
+    def _rerun() -> dict[str, Any]:
+        doc = store.get_rehearsal(rehearsal_id)
+        if not doc:
+            raise engine.StepError(f"unknown rehearsal {rehearsal_id}")
+        new = service.create_rehearsal(connection_id=doc["connection_id"], name=doc["name"], up_sql=doc["up_sql"],
+                                       down_sql=doc.get("down_sql"), parent_id=rehearsal_id, user=service.SYSTEM_USER,
+                                       options={"drift_check": True})
+        audit.record("drift.rerun", target=rehearsal_id, new=new["id"])
+        return {"queued": True, "new_rehearsal_id": new["id"], "version": new["version"]}
+
+    return await _call(_rerun)

@@ -43,14 +43,20 @@ class Settings(BaseSettings):
     trueforge_ui_url: str = ""  # defaults to base url
     trueforge_token: str = ""  # only when TrueForge login/OIDC is enabled
     dryrun_agent_name: str = "dryrun-rehearsal-agent"
-    dryrun_agent_model: str = "anthropic/claude-sonnet-4-6"
+    dryrun_agent_model: str = "openai/gpt-5-5"
     # URL TrueForge uses to reach DryRun's MCP server. Localhost requires TrueForge started with
     # OUTBOUND_URL_ALLOWED_HOSTS='["localhost","127.0.0.1"]' (see scripts/start-trueforge.ps1).
     dryrun_mcp_public_url: str = "http://localhost:8000/mcp/"
     dryrun_mcp_key: str = "change-me-local-mcp-key"
     # "trueforge" = agent drives the rehearsal via MCP tools; "direct" = deterministic engine only (no LLM).
     dryrun_agent_mode: str = "trueforge"
-    dryrun_agent_sandbox: bool = False  # enable TrueForge's Daytona sandbox (needs a Daytona provider configured)
+    dryrun_agent_sandbox: bool = False  # force TrueForge's Daytona sandbox on (auto-enabled when a provider is configured)
+    dryrun_drift_cron: str = "30 2 * * *"  # nightly drift check, Asia/Kolkata
+    question_timeout_s: int = 600  # how long a rehearsal waits for the engineer to answer the agent's question
+
+    # --- AWS: off-site copies of production backups (credentials via the standard AWS chain: `aws configure`) ---
+    aws_s3_bucket: str = ""
+    aws_region: str = "ap-south-1"
 
     # --- Engine limits ----------------------------------------------------------------------
     sandbox_ttl_minutes: int = 45

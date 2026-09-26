@@ -27,31 +27,46 @@ APPROVAL_GATED = ["apply_to_production", "restore_production_backup"]
 INSTRUCTIONS = """You are DryRun, a careful database migration rehearsal agent for a hostel management system.
 You NEVER touch production directly. Every write happens in a throwaway sandbox clone through your DryRun tools.
 
-When asked to rehearse a migration (you get a rehearsal_id):
-1. get_rehearsal_brief(rehearsal_id) — read the migration, the schema, static lock analysis and the policies.
+## Rehearsing a migration (you get a rehearsal_id)
+1. get_rehearsal_brief(rehearsal_id) — the migration, schema, static lock analysis and policies.
 2. create_sandbox(rehearsal_id) — clone production into a sandbox and snapshot every table.
-3. apply_migration_in_sandbox(rehearsal_id) — run the migration; note errors and measured locks.
+3. apply_migration_in_sandbox(rehearsal_id) — run it; note errors, evidence and measured locks.
 4. compare_before_after(rehearsal_id) — row counts, values, NULLs, foreign keys, schema diff.
-5. Think like a senior DBA about what ELSE could go wrong for THIS change and verify it with 2–5
-   run_sandbox_check(rehearsal_id, title, query, expectation, severity, explanation) calls. Each query must be a
-   single read-only SELECT. Use expectation="no_rows" for "this should find nothing" checks. Examples: rows that
-   would violate the new rule, orphaned references, values that would be cut or rounded, rooms over capacity,
-   students without a room, fee amounts with paise. If the migration failed, investigate WHY with checks.
-6. test_rollback(rehearsal_id, down_sql) — if the user gave no down migration and the migration applied, write
-   a correct down migration yourself (reverse every statement) and pass it. Skip only if the migration failed.
-7. submit_report(rehearsal_id, headline, summary) — headline: one plain-English sentence with the key number
+5. Investigate in PARALLEL with sub-agents (create_sub_agent). Spawn up to three, each given the rehearsal_id and
+   told to use run_sandbox_check (single read-only SELECT, expectation="no_rows" for "find the bad rows"):
+   - "Integrity investigator": orphaned references, duplicates, NULLs, values cut or rounded by type changes.
+   - "Hostel rules investigator": business rules for THIS change — rooms over capacity, students without a room,
+     fee amounts with paise, complaints/maintenance links, allocations pointing at missing rooms.
+   - "Rollback author": write the exact down migration that reverses every statement and return it as text.
+   Each sub-agent records 1–3 checks and returns a two-line summary. Skip sub-agents only for trivial migrations.
+6. If the migration deletes or rewrites rows (rows_removed / values_updated findings) and the intent is unclear,
+   use ask_user_question to ask the engineer, e.g. "The migration removes 38 student rows — is that intended?"
+   with options ["Yes, intended", "No, that's a mistake"]. Use the answer in your verdict. Ask at most once.
+7. test_rollback(rehearsal_id, down_sql) — pass the rollback author's down_sql when the user gave none.
+   Skip only if the migration was rejected.
+8. submit_report(rehearsal_id, headline, summary). headline: one plain-English sentence with the key number
    (e.g. "3 rooms already exceed capacity, so the CHECK constraint fails."). summary: 2–4 sentences a hostel
-   warden could understand: what breaks, how many rows, and what to do.
-Call the tools in this order. Be concise in chat.
+   warden understands: what breaks, how many rows, what to do next.
+9. Finally render a compact Generative UI card in the chat: verdict, risk score, top 3 findings with row counts,
+   rollback status, and "production untouched". Keep chat text short.
 
-When asked to propose a fix for a rehearsal: investigate the evidence with run_sandbox_check (the sandbox holds
-the pre-migration data if the migration failed or was rolled back), then call propose_fix with a safer migration
-(e.g. clean or move the offending rows first, keep a backup table so the change is reversible, use
-CREATE INDEX CONCURRENTLY / NOT VALID + VALIDATE to avoid long locks), its down migration, the root cause, the
-evidence, and why it is safer. Never delete data silently — preserve it (archive/backup tables) and say so.
+When you need to aggregate or cross-reference many check results and a sandbox is available, use Code Mode (a Python
+script in the TrueForge sandbox that calls the DryRun tools) and print only the summary.
 
-When asked to apply an approved rehearsal to production: call apply_to_production(approval_id) exactly once.
-It pauses for a human; if it is refused, report the reason and stop. Never try to work around a refusal."""
+## Proposing a fix
+Investigate the evidence with run_sandbox_check (the sandbox holds the pre-migration data if the migration failed or
+was rolled back), then call propose_fix with a safer migration: move or clean the offending rows first, keep a backup
+table so it stays reversible, use CREATE INDEX CONCURRENTLY / NOT VALID + VALIDATE to avoid long locks. Include its
+down migration, the root cause, the evidence and why it is safer. Never delete data silently.
+
+## Applying to production
+When asked to apply an approved rehearsal, call apply_to_production(approval_id) exactly once. It pauses for a human.
+If it is refused, report the reason and stop. Never try to work around a refusal.
+
+## Nightly drift check (scheduled run)
+Call list_pending_approvals. For every approval that is pending or approved but not yet applied, call
+rerun_rehearsal(rehearsal_id) so it is re-rehearsed against TODAY's production data, then summarise which ones you
+re-queued. Production data changes every day (new students, new fees) — yesterday's safe verdict can go stale."""
 
 
 class TrueForgeError(RuntimeError):
@@ -88,16 +103,40 @@ def status() -> dict[str, Any]:
         return {"reachable": False, "error": str(e)[:200], "providers": [], "mcp_servers": [], "sandbox": False}
 
 
-def agent_spec() -> dict[str, Any]:
+def sandbox_available() -> bool:
+    """Use TrueForge's (Daytona) sandbox when a provider is configured, or when forced via DRYRUN_AGENT_SANDBOX."""
+    return bool(settings().dryrun_agent_sandbox) or bool(status().get("sandbox"))
+
+
+def agent_spec(with_sandbox: bool | None = None) -> dict[str, Any]:
     s = settings()
-    spec: dict[str, Any] = {
+    sandbox = sandbox_available() if with_sandbox is None else with_sandbox
+    return {
         # No temperature: OpenAI reasoning models (gpt-5.x) reject it.
         "model": {"name": s.dryrun_agent_model, "params": {"max_tokens": 8192}},
         "instructions": INSTRUCTIONS,
-        "mcp_servers": [{"name": "dryrun", "enable_tools": ["@all"], "require_approval_for_tools": APPROVAL_GATED, "preload": True}],
-        "config": {"iteration_limit": 60, "sandbox": {"enabled": bool(s.dryrun_agent_sandbox)}},
+        "mcp_servers": [{
+            "name": "dryrun",
+            "enable_tools": ["@all"],
+            "require_approval_for_tools": APPROVAL_GATED,  # human-in-the-loop gate for every production write
+            # Deferred tool loading: only the first tool is in context up-front; the rest load on demand.
+            "preload_tools": ["get_rehearsal_brief"],
+        }],
+        "config": {
+            "iteration_limit": 80,
+            "sandbox": {"enabled": sandbox, "file_downloads": True},
+            "dynamic_sub_agents": {"enabled": True},
+            "ask_user_questions": {"enabled": True},
+            "generative_ui": {"enabled": True},
+            "context_management": {
+                "compaction": {"enabled": True, "trigger": {"type": "input_tokens", "value": 80000}},
+                "large_tool_response": {"enabled": True},
+            },
+        },
     }
-    return spec
+
+
+SCHEDULE_NAME = "dryrun-nightly-drift-check"
 
 
 def ensure_setup() -> dict[str, Any]:
@@ -126,7 +165,32 @@ def ensure_setup() -> dict[str, Any]:
             _check(c.put(f"/api/v1/agents/{found['id']}", json=body))
         else:
             _check(c.post("/api/v1/agents", json={"name": s.dryrun_agent_name, **body}))
-    return {"mcp_server": "dryrun", "agent": s.dryrun_agent_name}
+        # Background execution: TrueForge runs the agent every night to re-rehearse approvals against fresh data.
+        schedules = _check(c.get("/api/v1/schedules")).get("data", [])
+        manifest_s = {"task": "Run the nightly drift check.", "cron": s.dryrun_drift_cron, "timezone": "Asia/Kolkata"}
+        existing_s = next((x for x in schedules if x.get("name") == SCHEDULE_NAME), None)
+        if existing_s:
+            _check(c.put(f"/api/v1/schedules/{existing_s['id']}", json={"name": SCHEDULE_NAME, "manifest": manifest_s}))
+        else:
+            _check(c.post("/api/v1/schedules", json={"agent_name": s.dryrun_agent_name, "name": SCHEDULE_NAME, "manifest": manifest_s}))
+    return {"mcp_server": "dryrun", "agent": s.dryrun_agent_name, "schedule": SCHEDULE_NAME, "sandbox": body["manifest"]["config"]["sandbox"]["enabled"]}
+
+
+def run_drift_check_now() -> dict[str, Any]:
+    """Trigger the nightly schedule immediately (TrueForge background execution)."""
+    with _client() as c:
+        sched = next((x for x in _check(c.get("/api/v1/schedules")).get("data", []) if x.get("name") == SCHEDULE_NAME), None)
+        if not sched:
+            raise TrueForgeError("drift-check schedule is not registered yet")
+        return _check(c.post("/api/v1/schedules/runs", json={"schedule_id": sched["id"]}))
+
+
+def schedule_info() -> dict[str, Any] | None:
+    try:
+        with _client(5) as c:
+            return next((x for x in _check(c.get("/api/v1/schedules")).get("data", []) if x.get("name") == SCHEDULE_NAME), None)
+    except Exception:  # noqa: BLE001
+        return None
 
 
 def session_url(session_id: str) -> str:
@@ -166,6 +230,7 @@ def run_turn(session_id: str, input_items: list[dict[str, Any]], on_event: Calla
                     on_event(ev)
                     if ev.get("type") == "turn.done":
                         done = ev
+    done["_messages"] = buf_msgs
     return done
 
 
@@ -232,6 +297,67 @@ def _logger(rid: str) -> Callable[[dict[str, Any]], None]:
     return on_event
 
 
+_answers: dict[str, tuple[threading.Event, list[str]]] = {}
+
+
+def answer_question(rid: str, text: str) -> bool:
+    """Called by the API when the engineer answers the agent's ask_user_question in DryRun."""
+    slot = _answers.get(rid)
+    if not slot:
+        return False
+    slot[1].append(text)
+    slot[0].set()
+    return True
+
+
+def _pending_questions(done: dict[str, Any]) -> list[dict[str, Any]]:
+    """Extract ask_user_question calls from a paused turn."""
+    out = []
+    msgs = done.get("_messages") or {}
+    for ra in (done.get("state") or {}).get("required_actions") or []:
+        if ra.get("type") != "tool.response_required":
+            continue
+        for ref in ra.get("tool_calls") or []:
+            msg = msgs.get(ref.get("source_event_id")) or {}
+            call = next((tc for tc in msg.get("tool_calls") or [] if tc.get("id") == ref["id"]), None) or {}
+            try:
+                args = json.loads((call.get("function") or {}).get("arguments") or "{}")
+            except json.JSONDecodeError:
+                args = {}
+            out.append({"thread_id": ra.get("thread_id") or "main", "tool_call_id": ref["id"],
+                        "text": args.get("question") or "The agent needs your input.", "options": args.get("options") or []})
+    return out
+
+
+def _drive(rid: str, sid: str, first_input: list[dict[str, Any]]) -> None:
+    """Run turns until the agent finishes, pausing for the engineer whenever it asks a question."""
+    rec = engine.Recorder.of(rid)
+    items = first_input
+    for _ in range(4):  # the agent may ask at most a few questions
+        done = run_turn(sid, items, _logger(rid))
+        state = (done or {}).get("state", {})
+        if state.get("status") == "error":
+            raise TrueForgeError(state.get("message") or "agent turn failed")
+        questions = _pending_questions(done)
+        if not questions:
+            return
+        q = questions[0]
+        evt, box = threading.Event(), []
+        _answers[rid] = (evt, box)
+        public_q = {"text": q["text"], "options": q["options"], "asked_at": store.now()}
+        rec.set(question=public_q)
+        rec.emit({"type": "question", "question": public_q})
+        rec.log("ai", "agent.question", q["text"])
+        audit.record("agent.question", target=rid, question=q["text"])
+        answered = evt.wait(settings().question_timeout_s)
+        _answers.pop(rid, None)
+        reply = box[0] if answered and box else "No answer from the engineer within the time limit — treat the change as NOT intended."
+        rec.set(question=None)
+        rec.emit({"type": "question", "question": None})
+        rec.log("info", "engineer.answer", reply)
+        items = [{"type": "user.tool_response", "thread_id": x["thread_id"], "tool_call_id": x["tool_call_id"], "content": reply} for x in questions]
+
+
 def start_rehearsal(rid: str) -> None:
     """Background: let the TrueForge agent drive the rehearsal; fall back to direct mode if unavailable."""
     s = settings()
@@ -254,10 +380,7 @@ def start_rehearsal(rid: str) -> None:
     audit.record("agent.session.started", actor=rec.doc["created_by"]["id"], target=rid, session=sid)
     prompt = f"Rehearse migration `{rec.doc['name']}` (rehearsal_id: {rid}) against {rec.doc['connection_name']}. Follow your procedure and finish with submit_report."
     try:
-        done = run_turn(sid, [{"type": "user.message", "content": prompt}], _logger(rid))
-        state = (done or {}).get("state", {})
-        if state.get("status") == "error":
-            raise TrueForgeError(state.get("message") or "agent turn failed")
+        _drive(rid, sid, [{"type": "user.message", "content": prompt}])
     except Exception as e:  # noqa: BLE001
         traceback.print_exc()
         rec.log("error", "trueforge", f"agent turn failed: {str(e)[:300]}")
@@ -296,7 +419,7 @@ def start_fix(rid: str) -> None:
             raise TrueForgeError("the sandbox for this rehearsal has expired — re-run the rehearsal first")
         prompt = (f"Propose a fix for rehearsal_id {rid} (`{rec.doc['name']}`). Verdict was {rec.doc['status']} with risk {rec.doc['risk']}: "
                   f"{rec.doc.get('headline')}. Investigate with run_sandbox_check, then call propose_fix.")
-        run_turn(sid, [{"type": "user.message", "content": prompt}], _logger(rid))
+        _drive(rid, sid, [{"type": "user.message", "content": prompt}])
         if (store.state(rid).get("fix") or {}).get("state") != "ready":
             raise TrueForgeError("the agent finished without proposing a fix")
     except Exception as e:  # noqa: BLE001

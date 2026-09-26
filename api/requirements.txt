@@ -8,3 +8,4 @@ sse-starlette>=2
 pydantic-settings>=2
 trueforge-sdk>=0.2
 pytest>=8
+boto3>=1.34

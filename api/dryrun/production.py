@@ -107,7 +107,9 @@ def apply(approval_id: str) -> dict[str, Any]:
         _step(approval, "backup", "failed", proc.stderr.decode(errors="replace")[:200], t0)
         return _finish(approval, "failed", "backup failed — production untouched")
     approval["apply"]["backup_ref"] = backup
-    _step(approval, "backup", "passed", f"{Path(backup).stat().st_size / 1024:.0f} KB", t0)
+    size_kb = Path(backup).stat().st_size / 1024
+    offsite = _upload_s3(approval, backup)
+    _step(approval, "backup", "passed", f"{size_kb:.0f} KB" + (f" · copied to {offsite}" if offsite else ""), t0)
     _log(approval, "info", "backup", f"saved {Path(backup).name}")
 
     # 2. Apply with guard rails
@@ -175,6 +177,26 @@ def apply(approval_id: str) -> dict[str, Any]:
           f"{matched}/{len(expected)} tables match rehearsal · {len(checks)} AI checks re-run", t0)
     approval["apply"]["restore_until"] = (datetime.now(timezone.utc) + timedelta(hours=24)).isoformat()
     return _finish(approval, "succeeded" if problems == 0 else "failed", "applied and verified" if problems == 0 else f"{problems} verification check(s) failed — consider restoring")
+
+
+def _upload_s3(approval: dict[str, Any], path: str) -> str | None:
+    """Keep an off-site copy of every production backup in Amazon S3 (when AWS_S3_BUCKET is set)."""
+    s = settings()
+    if not s.aws_s3_bucket:
+        return None
+    try:
+        import boto3
+
+        key = f"dryrun/backups/{Path(path).name}"
+        boto3.client("s3", region_name=s.aws_region).upload_file(path, s.aws_s3_bucket, key, ExtraArgs={"ServerSideEncryption": "AES256"})
+        uri = f"s3://{s.aws_s3_bucket}/{key}"
+        approval["apply"]["backup_s3"] = uri
+        _log(approval, "info", "backup", f"off-site copy -> {uri}")
+        audit.record("backup.s3", target=approval["id"], uri=uri)
+        return uri
+    except Exception as e:  # noqa: BLE001 - the local backup still exists; never block on the off-site copy
+        _log(approval, "warn", "backup", f"S3 upload skipped: {str(e).splitlines()[0][:160]}")
+        return None
 
 
 def _finish(approval: dict[str, Any], status: str, message: str) -> dict[str, Any]:

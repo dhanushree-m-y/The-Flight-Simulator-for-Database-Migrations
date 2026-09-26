@@ -14,7 +14,7 @@ import { LiveLog } from "@/components/rehearsal/LiveLog";
 import { bandVar, checkSeenAt, isLive, issuesOf, useCountUp, useNow, verdictOf } from "@/components/rehearsal/util";
 import { api, ApiError, useApi, useEventStream } from "@/lib/api";
 import { fmtDuration, fmtInt, fmtTime, pad2 } from "@/lib/format";
-import type { Check, LiveEvent, Policy, Rehearsal, RehearsalStatus } from "@/lib/types";
+import type { AgentQuestion, Check, LiveEvent, Policy, Rehearsal, RehearsalStatus } from "@/lib/types";
 
 const MAX_LOG = 3000;
 
@@ -39,6 +39,8 @@ function applyEvent(prev: Rehearsal | null, e: LiveEvent): Rehearsal | null {
     }
     case "sandbox":
       return { ...prev, sandbox: e.sandbox };
+    case "question":
+      return { ...prev, question: e.question };
     default:
       return prev;
   }
@@ -207,6 +209,8 @@ export default function LiveRehearsalPage() {
 
         {/* finished-on-arrival: final state + prominent report link */}
         {!live && !finale && <FinalBanner r={r} id={id} />}
+
+        {live && r.question && <AgentQuestionCard id={id} question={r.question} />}
 
         <StageTimeline stages={r.stages} metrics={m} dark={dark} now={now} />
 
@@ -622,5 +626,57 @@ function AbortButton({ id, onDone }: { id: string; onDone: () => void }) {
     <button type="button" className={`btn btn-sm${confirming ? " abort-confirm" : ""}`} onClick={go} disabled={busy} aria-live="polite">
       {busy ? "Aborting…" : confirming ? "Confirm abort?" : "Abort"}
     </button>
+  );
+}
+
+
+/** The TrueForge agent paused on ask_user_question — the engineer answers here and the agent resumes. */
+function AgentQuestionCard({ id, question }: { id: string; question: AgentQuestion }) {
+  const [text, setText] = useState("");
+  const [sending, setSending] = useState(false);
+  const send = async (answer: string) => {
+    if (!answer.trim() || sending) return;
+    setSending(true);
+    try {
+      await api(`/api/rehearsals/${id}/answer`, { method: "POST", json: { answer: answer.trim() } });
+      toast.success("Answer sent — the agent is continuing");
+    } catch (e) {
+      toast.error(e instanceof ApiError ? e.message : "Could not send the answer");
+      setSending(false);
+    }
+  };
+  return (
+    <div
+      className="glass rise"
+      role="alertdialog"
+      aria-label="The DryRun agent is asking a question"
+      style={{ padding: "22px 26px", display: "flex", flexDirection: "column", gap: 14, borderColor: "#CBB8F6", boxShadow: "0 1px 0 rgba(255,255,255,.9) inset,0 18px 40px rgba(119,88,200,.18)" }}
+    >
+      <div className="row" style={{ gap: 10 }}>
+        <span className="st st-ai">◇ Agent needs your input</span>
+        <span className="eyebrow" style={{ marginLeft: "auto" }}>asked {fmtTime(question.asked_at)} · rehearsal paused</span>
+      </div>
+      <span className="serif" style={{ fontSize: 30, lineHeight: 1.15 }}>{question.text}</span>
+      <div className="row" style={{ gap: 10, flexWrap: "wrap" }}>
+        {question.options.map((o) => (
+          <button key={o} type="button" className="btn btn-ai" disabled={sending} onClick={() => send(o)}>
+            {o}
+          </button>
+        ))}
+      </div>
+      <form
+        className="row"
+        style={{ gap: 10 }}
+        onSubmit={(ev) => {
+          ev.preventDefault();
+          send(text);
+        }}
+      >
+        <input className="inp" style={{ fontFamily: "var(--f-ui)", fontSize: 14 }} placeholder="Or type your own answer…" value={text} onChange={(ev) => setText(ev.target.value)} aria-label="Your answer" />
+        <button type="submit" className="btn" disabled={sending || !text.trim()}>
+          Send
+        </button>
+      </form>
+    </div>
   );
 }

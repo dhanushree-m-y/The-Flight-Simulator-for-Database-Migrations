@@ -172,6 +172,14 @@ export interface Rehearsal extends RehearsalSummary {
   error: string | null;
   /** The TrueForge session that drove this rehearsal (open it in the TrueForge UI). */
   agent: { provider: "trueforge" | "direct"; session_id: string | null; url: string | null; model: string | null } | null;
+  /** Set while the TrueForge agent is paused on ask_user_question, waiting for the engineer. */
+  question: AgentQuestion | null;
+}
+
+export interface AgentQuestion {
+  text: string;
+  options: string[];
+  asked_at: string;
 }
 
 export interface BrokenRows {
@@ -304,7 +312,7 @@ export interface AuditVerify {
 }
 
 export interface Integration {
-  key: "truefoundry" | "github" | "slack" | "llm";
+  key: "truefoundry" | "llm" | "sandbox" | "schedule" | "aws" | "github" | "slack";
   name: string;
   connected: boolean;
   detail: string;
@@ -326,6 +334,7 @@ export type LiveEvent =
   | { type: "metrics"; metrics: Metrics }
   | { type: "check"; check: Check }
   | { type: "sandbox"; sandbox: SandboxInfo }
+  | { type: "question"; question: AgentQuestion | null }
   | { type: "done"; rehearsal: Rehearsal };
 
 export type ApplyEvent =

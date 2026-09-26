@@ -173,6 +173,7 @@ def new_rehearsal_doc(*, rid: str, name: str, version: int, lineage_id: str, par
         "policy_violations": [],
         "error": None,
         "agent": None,
+        "question": None,
     }
 
 
