@@ -17,3 +17,6 @@ backups/
 *.dump
 .DS_Store
 frontend-design.html
+
+# personal handoff notes (local paths, status) — not part of the public repo
+MEMORY.md
