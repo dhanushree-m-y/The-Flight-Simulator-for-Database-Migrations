@@ -80,6 +80,11 @@ def expires_at() -> str:
     return (datetime.now(timezone.utc) + timedelta(minutes=settings().sandbox_ttl_minutes)).isoformat()
 
 
+def list_sandboxes() -> list[str]:
+    with connect(with_database(admin_dsn(), "postgres"), autocommit=True) as c:
+        return [r["datname"] for r in c.execute("SELECT datname FROM pg_database WHERE datname LIKE %s", (PREFIX + "%",)).fetchall()]
+
+
 def reap_expired(active: dict[str, str]) -> list[str]:
     """Drop sandboxes whose TTL passed. `active` maps sandbox name → expires_at ISO string."""
     dropped = []

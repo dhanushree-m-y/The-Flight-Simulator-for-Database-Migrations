@@ -110,18 +110,34 @@ def boot() -> None:
             print(f"[dryrun] TrueForge setup deferred: {e}")
 
 
+_unknown_seen: set[str] = set()
+
+
 async def _janitor() -> None:
+    """Drop expired sandboxes. A sandbox is protected while its rehearsal is queued/running (even mid-clone,
+    before the engine's state knows it) and until its TTL passes; a database no rehearsal claims is dropped
+    only after it has been unclaimed on two consecutive passes."""
     while True:
         await asyncio.sleep(120)
         try:
-            active = {}
-            for r in store.list_rehearsals(limit=200):
+            far = (datetime.now(timezone.utc) + timedelta(days=1)).isoformat()
+            active: dict[str, str] = {}
+            for r in store.list_rehearsals(limit=500):
                 st = store.state(r["id"])
-                if st.get("sandbox"):
-                    active[st["sandbox"]] = st.get("sandbox_expires") or datetime.now(timezone.utc).isoformat()
-            dropped = await asyncio.to_thread(sandbox.reap_expired, active)
+                names = {st.get("sandbox"), (r.get("sandbox") or {}).get("id")} - {None}
+                for n in names:
+                    live = r.get("status") in ("queued", "running")
+                    active[n] = far if live else (st.get("sandbox_expires") or (r.get("sandbox") or {}).get("expires_at") or far)
+            claimed_or_first_seen = dict(active)
+            existing = await asyncio.to_thread(sandbox.list_sandboxes)
+            for n in existing:
+                if n not in active and n not in _unknown_seen:
+                    claimed_or_first_seen[n] = far  # give it one more pass
+            _unknown_seen.clear()
+            _unknown_seen.update(n for n in existing if n not in active)
+            dropped = await asyncio.to_thread(sandbox.reap_expired, claimed_or_first_seen)
             for name in dropped:
-                for r in store.list_rehearsals(limit=200):
+                for r in store.list_rehearsals(limit=500):
                     if (r.get("sandbox") or {}).get("id") == name:
                         r["sandbox"]["status"] = "destroyed"
                         store.save_rehearsal(r)
